@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,19 +34,9 @@ class _Drawer_MenuState extends State<Drawer_Menu> {
                 child: Text(
                   "Browse".toUpperCase(),
                   style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white),
-
-
-
-
                   )
                 ),
-
               SidemenuTile(),
-
-
-
-
-
             ],
           ),
         ),
@@ -62,8 +51,6 @@ class _Drawer_MenuState extends State<Drawer_Menu> {
 class List_Item extends StatelessWidget {
   final icon;
   final String title;
-  
-
   const List_Item({
     super.key, this.icon, required this.title,
   });

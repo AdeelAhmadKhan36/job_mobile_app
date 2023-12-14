@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 class Custom_Button extends StatelessWidget {
 
-
   const Custom_Button({super.key, this.height, this.width, required this.text, this.onTap, required this.color, this.color2});
 
   final double? height;

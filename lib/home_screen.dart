@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/screens/drawer/drawer_widget.dart';
+import 'package:rive/rive.dart';
 
 class Home_Screen extends StatefulWidget {
   const Home_Screen({super.key});
@@ -29,9 +30,14 @@ class _Home_ScreenState extends State<Home_Screen> {
           ],
           child: Padding(
             padding:EdgeInsets.all(12),
-            child: Drawer_Widget(),
+            child: Ink.image(
+              image: AssetImage("Assets/Images/menu_icon.png"),
+
+              width: 80,
+              height: 80,
+            ),
           ),
-          
+
         )),
     );
   }

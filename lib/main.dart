@@ -7,7 +7,9 @@ import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/view/Main_Screen.dart';
 import 'package:job_mobile_app/view/Splash_Screen.dart';
+import 'package:job_mobile_app/view/hamda.dart';
 import 'package:job_mobile_app/view/screens/auth/login_screen.dart';
+import 'package:job_mobile_app/view/screens/drawer/drawer_screen.dart';
 import 'package:job_mobile_app/view/screens/drawer/side_manu.dart';
 import 'package:job_mobile_app/view/screens/on_boarding_screen/page_three.dart';
 import 'package:provider/provider.dart';
@@ -34,8 +36,11 @@ class MyApp extends StatelessWidget {
         ],
 
         child: const GetMaterialApp(
+          debugShowCheckedModeBanner:false,
         // home: Splash_Screen(),
-        home: Drawer_Menu(),
+        // home: Drawer_Menu(),
+        // home: DrawerAnimated(),
+        home: DrawerAnimated(),
 
 
     )

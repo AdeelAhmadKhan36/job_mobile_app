@@ -5,9 +5,9 @@ import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 class Drawer_Screen extends StatefulWidget {
-  final ValueSetter indexSetter;
+  // final ValueSetter indexSetter;
 
-  const Drawer_Screen({super.key, required this.indexSetter});
+  const Drawer_Screen({super.key, required Null Function(dynamic index) indexSetter,});
 
   @override
   State<Drawer_Screen> createState() => _Drawer_ScreenState();
