@@ -48,6 +48,7 @@ dependencies:
   animated_size_and_fade: ^3.0.1
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

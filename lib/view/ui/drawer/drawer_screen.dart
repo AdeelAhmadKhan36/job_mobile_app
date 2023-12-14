@@ -1,8 +1,11 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/common/app_style.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:provider/provider.dart';
 class Drawer_Screen extends StatefulWidget {
   // final ValueSetter indexSetter;
@@ -17,7 +20,6 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<Zoom_Notifier>(builder: (context,zoomNotifier,child){
-
       return GestureDetector(
         onDoubleTap:(){
           ZoomDrawer.of(context)!.toggle();
@@ -80,6 +82,22 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
   }
 
   drawerItem(icon, text,index,color) {
+    return GestureDetector(
+      onTap: null,
+      child: Container(
+        margin:  EdgeInsets.only(left: 20.h, bottom: 20.h),
+        child: Row(
+          children: [
+            Icon(icon, color: color,),
+
+            ReusableText(text: text,
+            style: app_style(size: 12, color: color, fw:FontWeight.bold),
+            )
+
+          ],
+        ),
+      ),
+    );
 
   }
 }

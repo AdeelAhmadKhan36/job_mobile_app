@@ -5,7 +5,8 @@ import 'package:job_mobile_app/controllers/login_provider.dart';
 import 'package:job_mobile_app/utils/Round_button.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
-import 'package:job_mobile_app/view/screens/auth/signup_screen.dart';
+import 'package:job_mobile_app/view/ui/auth/signup_screen.dart';
+import 'package:job_mobile_app/view/ui/auth/signup_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/constants/app_colors.dart';

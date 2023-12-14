@@ -3,7 +3,9 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
-import 'package:job_mobile_app/view/screens/drawer/drawer_screen.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
+import 'package:job_mobile_app/view/ui/drawer/drawer_screen.dart';
+import 'package:job_mobile_app/view/ui/drawer/drawer_screen.dart';
 import 'package:provider/provider.dart';
 
 
@@ -39,7 +41,7 @@ class _Main_ScreenState extends State<Main_Screen> {
   Widget currentScreen(Zoom_Notifier zoomNotifier) {
     switch (zoomNotifier.currentIndex) {
       case 0:
-        return Home_Screen();
+        return drawer_animated();
       case 1:
         return Home_Screen();
       case 2:

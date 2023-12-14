@@ -1,44 +1,1 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:job_mobile_app/view/common/app_bar.dart';
-import 'package:job_mobile_app/view/screens/drawer/drawer_widget.dart';
-import 'package:rive/rive.dart';
-
-class Home_Screen extends StatefulWidget {
-  const Home_Screen({super.key});
-
-  @override
-  State<Home_Screen> createState() => _Home_ScreenState();
-}
-
-class _Home_ScreenState extends State<Home_Screen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(preferredSize:Size.fromHeight(50),
-
-        child: Custom_AppBar(
-          actions: [
-            Padding(
-              padding: EdgeInsets.all(12),
-              child: const CircleAvatar(
-                radius: 15,
-                backgroundImage:AssetImage("Assets/Images/dp.jpg") ,
-              ),
-            ),
-
-          ],
-          child: Padding(
-            padding:EdgeInsets.all(12),
-            child: Ink.image(
-              image: AssetImage("Assets/Images/menu_icon.png"),
-
-              width: 80,
-              height: 80,
-            ),
-          ),
-
-        )),
-    );
-  }
-}
+import 'package:flutter/material.dart';import 'package:flutter_screenutil/flutter_screenutil.dart';import 'package:get/get_core/src/get_main.dart';import 'package:get/get_navigation/get_navigation.dart';import 'package:job_mobile_app/resources/constants/app_colors.dart';import 'package:job_mobile_app/view/Widgtes/job_horizental_tile.dart';import 'package:job_mobile_app/view/Widgtes/search_widgets.dart';import 'package:job_mobile_app/view/common/app_bar.dart';import 'package:job_mobile_app/view/common/app_style.dart';import 'package:job_mobile_app/view/common/reuse_able_text.dart';import 'package:job_mobile_app/view/ui/drawer/drawer_widget.dart';import 'package:job_mobile_app/view/ui/search/searchpage.dart';import 'package:rive/rive.dart';class Home_Screen extends StatefulWidget {  const Home_Screen({super.key});  @override  State<Home_Screen> createState() => _Home_ScreenState();}class _Home_ScreenState extends State<Home_Screen> {  @override  Widget build(BuildContext context) {    return Scaffold(        body: SafeArea(      child: SingleChildScrollView(        child: Padding(          padding: EdgeInsets.symmetric(horizontal: 20),          child: Column(            crossAxisAlignment: CrossAxisAlignment.start,            children: [              Heading(                text: 'Search\nFind and Apply',                color: Color(kDark.value),                fontSize: 40,                fontWeight: FontWeight.bold,              ),              SizedBox(height: 40,),              search_widget(                onTap: (){                  Get.to(()=> Search_Page());                },              ),              SizedBox(height: 35,),              Row(                mainAxisAlignment: MainAxisAlignment.spaceBetween,                children: [                  GestureDetector(                      onTap: (){},                      child: Heading(text: 'Popular Jobs', color:Color(kDark.value), fontSize:20, fontWeight:FontWeight.bold)),                  GestureDetector(                      onTap: (){},                      child: Heading(text: 'View all', color:Color(kOrange.value), fontSize:18, fontWeight:FontWeight.w600))                ],              ),              SizedBox(height: 20,),              JobHorizontalTile(),              SizedBox(height: 20,),              Row(                mainAxisAlignment: MainAxisAlignment.spaceBetween,                children: [                  GestureDetector(                      onTap: (){},                      child: Heading(text: 'Rescently Posted', color:Color(kDark.value), fontSize:20, fontWeight:FontWeight.bold)),                  GestureDetector(                      onTap: (){},                      child: Heading(text: 'View all', color:Color(kOrange.value), fontSize:18, fontWeight:FontWeight.w600))                ],              ),            ],          ),        ),      ),    ));  }}

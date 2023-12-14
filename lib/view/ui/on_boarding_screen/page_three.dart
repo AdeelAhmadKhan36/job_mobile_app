@@ -5,8 +5,8 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/custom_outline_button.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
-import 'package:job_mobile_app/view/screens/auth/login_screen.dart';
-import 'package:job_mobile_app/view/screens/auth/signup_screen.dart';
+import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
+import 'package:job_mobile_app/view/ui/auth/signup_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class Page_Three extends StatelessWidget {
   const Page_Three({super.key});

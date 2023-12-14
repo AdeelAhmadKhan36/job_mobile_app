@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:job_mobile_app/controllers/on_boarding_providers.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
-import 'package:job_mobile_app/view/screens/on_boarding_screen/page_one.dart';
-import 'package:job_mobile_app/view/screens/on_boarding_screen/page_three.dart';
-import 'package:job_mobile_app/view/screens/on_boarding_screen/page_two.dart';
+import 'package:job_mobile_app/view/ui/on_boarding_screen/page_one.dart';
+import 'package:job_mobile_app/view/ui/on_boarding_screen/page_three.dart';
+import 'package:job_mobile_app/view/ui/on_boarding_screen/page_two.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
