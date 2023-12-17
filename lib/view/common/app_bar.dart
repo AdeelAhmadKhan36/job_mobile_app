@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+
 class Custom_AppBar extends StatelessWidget {
   final String? text;
   final Widget child;
-  final  title;
-  final List<Widget>?actions;
+  final Widget? title;
+  final List<Widget>? actions;
 
-  const Custom_AppBar({super.key, this.text, required this.child, this.actions,this.title});
+  const Custom_AppBar({
+    Key? key,
+    this.text,
+    required this.child,
+    this.title,
+    this.actions,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      iconTheme:IconThemeData(),
-      backgroundColor: Color(kLight.value),
+      iconTheme: IconThemeData(),
+      backgroundColor: Colors.white54,
       elevation: 0,
       automaticallyImplyLeading: false,
+      leadingWidth: 70,
       leading: child,
       actions: actions,
       centerTitle: true,
-     title: title,
-
-      );
-
+      title: title ??
+          (text != null
+              ? Text(
+            text!,
+            style: TextStyle(fontSize: 16, color: Colors.black), // Update color
+          )
+              : null),
+    );
   }
 }
+
+

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const kDark=Colors.black;
+const kALight=Colors.white70;
 const kLight=Colors.white;
 const kDarkGrey=Color(0xFF9B9B9B);
 const klightGrey=Color(0xFFD3D3D3);

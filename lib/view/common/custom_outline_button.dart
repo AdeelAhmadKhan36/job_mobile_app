@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 class Custom_Button extends StatelessWidget {
 
@@ -30,7 +31,7 @@ class Custom_Button extends StatelessWidget {
         child: Center(
           child: ReusableText(
             text: text,
-            fontWeight: FontWeight.bold, style: null,
+            fontWeight: FontWeight.bold, color:Color(kOrange.value),
           ),
         ),
       ),

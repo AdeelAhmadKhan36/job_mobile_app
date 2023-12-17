@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/Jobs/Jobs_page.dart';
 
 class JobHorizontalTile extends StatelessWidget {
-
-  const JobHorizontalTile({Key? key,})
+  final void Function()? onTap;
+  const JobHorizontalTile({Key? key, this.onTap,})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+         Get.to(()=>Job_Page (title: 'NetSole', id: '11',));
+
+      },
       child: Container(
-        height: 280,
-        width: 500,
+        height: 300,
+        width: 400,
+
         color: Color(klightGrey.value),
         child: Padding(
           padding: const EdgeInsets.only(left: 20,top: 20,right: 20),

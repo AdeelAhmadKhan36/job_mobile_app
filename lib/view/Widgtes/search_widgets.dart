@@ -24,18 +24,21 @@ class search_widget extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.search_rounded,
-                      weight: 50,
-                      color: Color(kOrange.value),
-                      size: 30,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Icon(
+                        Icons.search_rounded,
+                        weight: 50,
+                        color: Color(kLight.value),
+                        size: 30,
+                      ),
                     ),
                     SizedBox(width: 20,),
                     Text(
                        "Search for Job",
                       style: TextStyle(
                         fontSize: 18,
-                        color: Color(kOrange.value),
+                        color: Color(kLight.value),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
