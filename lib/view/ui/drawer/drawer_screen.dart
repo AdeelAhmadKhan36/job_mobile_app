@@ -1,6 +1,5 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
@@ -32,7 +31,7 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               drawerItem(
-                Icon(EvaIcons.menu),
+                Icon(EvaIcons.menu) as IconData,
                   "Home",
                   0,
                   zoomNotifier.currentIndex==0?
@@ -40,7 +39,7 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
                   Color(klightGrey.value),
               ),
               drawerItem(
-                Icon(EvaIcons.activityOutline),
+                Icon(EvaIcons.activityOutline) as IconData,
                 "Chat",
                 1,
                 zoomNotifier.currentIndex==0?
@@ -48,7 +47,7 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
                 Color(klightGrey.value),
               ),
               drawerItem(
-                Icon(EvaIcons.menu),
+                Icon(EvaIcons.menu) as IconData,
                 "BookMark",
                 2,
                 zoomNotifier.currentIndex==0?
@@ -56,15 +55,16 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
                 Color(klightGrey.value),
               ),
               drawerItem(
-                Icon(EvaIcons.menu),
+                Icon(EvaIcons.menu) as IconData,
                 "Device Mng",
                 3,
-                zoomNotifier.currentIndex==0?
-                Color(kLight.value):
-                Color(klightGrey.value),
+                zoomNotifier.currentIndex == 0
+                    ? Color(kLight.value)
+                    : Color(klightGrey.value),
               ),
+
               drawerItem(
-                Icons.person,
+                EvaIcons.person,
                 "Profile",
                 5,
                 zoomNotifier.currentIndex==0?
@@ -81,23 +81,22 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
     });
   }
 
-  drawerItem(icon, text,index,color) {
+  drawerItem(IconData icon, String text, int index, Color color) {
     return GestureDetector(
       onTap: null,
       child: Container(
-        margin:  EdgeInsets.only(left: 20.h, bottom: 20.h),
+        margin: EdgeInsets.only(left: 20, bottom: 20),
         child: Row(
           children: [
             Icon(icon, color: color,),
-
-            ReusableText(text: text,
-            style: app_style(size: 12, color: color, fw:FontWeight.bold),
+            ReusableText(
+              text: text,
+              style: app_style(size: 12, color: color, fw: FontWeight.bold),
             )
-
           ],
         ),
       ),
     );
-
   }
+
 }

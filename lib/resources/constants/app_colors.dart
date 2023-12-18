@@ -1,7 +1,6 @@
 //Here We will import all those colors that we will use in the app.
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const kDark=Colors.black;
 const kALight=Colors.white70;
@@ -21,6 +20,6 @@ const kprimary_colors=Color(0xFF501DB4);//This is color mainly i have used
 const kdrawer=Color(0xFF17203A);
 
 
-double height=812.h;
-double width=375.w;
+double height=812;
+double width=375;
 String theId="";

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class  height_spacer extends StatelessWidget {
 
@@ -8,7 +7,7 @@ class  height_spacer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: size.h,
+      height: size,
     );
   }
 }

@@ -31,7 +31,8 @@ class Custom_Button extends StatelessWidget {
         child: Center(
           child: ReusableText(
             text: text,
-            fontWeight: FontWeight.bold, color:Color(kOrange.value),
+            fontWeight: FontWeight.bold,
+            color: Color(kLight.value),
           ),
         ),
       ),

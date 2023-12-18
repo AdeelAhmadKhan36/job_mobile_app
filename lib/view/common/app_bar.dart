@@ -31,7 +31,7 @@ class Custom_AppBar extends StatelessWidget {
           (text != null
               ? Text(
             text!,
-            style: TextStyle(fontSize: 16, color: Colors.black), // Update color
+            style: TextStyle(fontSize: 20, color: Colors.black,fontWeight: FontWeight.bold), // Update color
           )
               : null),
     );
