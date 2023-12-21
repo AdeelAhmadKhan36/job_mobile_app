@@ -1,11 +1,7 @@
-import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/infor_card.dart';
 import 'package:job_mobile_app/view/common/smenu_sidebar_tile.dart';
-import 'package:rive/rive.dart';
 class Drawer_Menu extends StatefulWidget {
   const Drawer_Menu({super.key});
 
@@ -25,7 +21,7 @@ class _Drawer_MenuState extends State<Drawer_Menu> {
         child: SafeArea(
           child: Column(
             children: [
-              InfoCard(
+              const InfoCard(
                 name: 'Adeel Ahmad',
                 profession: 'Flutter Developer',
               ),
@@ -64,7 +60,7 @@ class List_Item extends StatelessWidget {
         child:Icon(icon,color: Colors.white,),
         ),
       title: Text(
-        title,style: TextStyle(color: Colors.white),),
+        title,style: const TextStyle(color: Colors.white),),
     );
   }
 }

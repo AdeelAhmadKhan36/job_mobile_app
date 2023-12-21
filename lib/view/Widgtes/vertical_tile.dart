@@ -22,6 +22,8 @@ class vertical_tile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
+                  backgroundImage: AssetImage("Assets/Images/codematics.jpg"),
+
                 ),
                 SizedBox(width:10,),
                 Row(

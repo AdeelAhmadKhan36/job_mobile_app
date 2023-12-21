@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 const kDark=Colors.black;
+const kRed=Colors.red;
 const kALight=Colors.white70;
 const kLight=Colors.white;
 const kDarkGrey=Color(0xFF9B9B9B);

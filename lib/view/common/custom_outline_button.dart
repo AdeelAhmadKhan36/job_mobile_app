@@ -32,7 +32,7 @@ class Custom_Button extends StatelessWidget {
           child: ReusableText(
             text: text,
             fontWeight: FontWeight.bold,
-            color: Color(kLight.value),
+            color: Color(kOrange.value),
           ),
         ),
       ),

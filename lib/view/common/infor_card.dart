@@ -17,8 +17,10 @@ class InfoCard extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 30,
-          backgroundColor: Colors.white24,
-          child: Icon(Icons.person, size: 20, color: Colors.white),
+         backgroundImage: AssetImage("Assets/Images/ak1.jpg"),
+
+
+
         ),
         SizedBox(width: 15),
         Column(

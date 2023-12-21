@@ -68,6 +68,7 @@ class _Job_PageState extends State<Job_Page> {
                         padding: const EdgeInsets.only(top: 10),
                         child: CircleAvatar(
                           radius: 25,
+                          backgroundImage: AssetImage("Assets/Images/flutter.png"),
                         ),
                       ),
                       SizedBox(
@@ -96,7 +97,7 @@ class _Job_PageState extends State<Job_Page> {
                             Custom_Button(
                               height: 30,
                               width: 85,
-                              color2: Color(kOrange.value),
+                              color2: Color(kLight.value),
                               text: 'Full Time',
                               color: Color(kOrange.value),
                             ),
@@ -165,17 +166,28 @@ class _Job_PageState extends State<Job_Page> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.only(left: 20,right: 20,bottom: 10),
-              child: Custom_Button(
+              child: GestureDetector(
                 onTap: (){
-
                   Get.to(()=>Profile_Page());
-
                 },
+                child: Container(
 
                   height: 50,
                   width: double.infinity,
-                  color2: Color(kOrange.value),
-                  text: "Apply Now", color: Color(kOrange.value)),
+                  color: Color(kOrange.value),
+
+                  child: Center(
+                    child: Text(
+                      "Apply Now",
+                      style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),
+                    ),
+                  ),
+
+
+                ),
+              ),
+
+
             ),
           )
         ]

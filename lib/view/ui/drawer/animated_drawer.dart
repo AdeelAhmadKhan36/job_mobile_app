@@ -86,7 +86,7 @@ class _drawer_animatedState extends State<drawer_animated> {
                           padding: EdgeInsets.all(12),
                           child: const CircleAvatar(
                             radius: 15,
-                            backgroundImage:AssetImage("Assets/Images/dp.jpg") ,
+                            backgroundImage:AssetImage("Assets/Images/ak1.jpg") ,
                           ),
                         ),
 
@@ -116,19 +116,19 @@ class _drawer_animatedState extends State<drawer_animated> {
           ),
 
           // Gesture for Slide
-          GestureDetector(
-            onHorizontalDragUpdate: (e) {
-              if (e.delta.dx > 0) {
-                setState(() {
-                  value = 1;
-                });
-              } else {
-                setState(() {
-                  value = 0;
-                });
-              }
-            },
-          )
+          // GestureDetector(
+          //   onHorizontalDragUpdate: (e) {
+          //     if (e.delta.dx > 0) {
+          //       setState(() {
+          //         value = 1;
+          //       });
+          //     } else {
+          //       setState(() {
+          //         value = 0;
+          //       });
+          //     }
+          //   },
+          // )
         ],
       ),
     );

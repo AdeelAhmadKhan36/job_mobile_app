@@ -6,10 +6,10 @@ import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/app_style.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:provider/provider.dart';
-class Drawer_Screen extends StatefulWidget {
-  // final ValueSetter indexSetter;
 
-  const Drawer_Screen({super.key, required Null Function(dynamic index) indexSetter,});
+class Drawer_Screen extends StatefulWidget {
+  const Drawer_Screen({Key? key, required Null Function(dynamic index) indexSetter})
+      : super(key: key);
 
   @override
   State<Drawer_Screen> createState() => _Drawer_ScreenState();
@@ -18,64 +18,59 @@ class Drawer_Screen extends StatefulWidget {
 class _Drawer_ScreenState extends State<Drawer_Screen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<Zoom_Notifier>(builder: (context,zoomNotifier,child){
+    return Consumer<Zoom_Notifier>(builder: (context, zoomNotifier, child) {
       return GestureDetector(
-        onDoubleTap:(){
+        onDoubleTap: () {
           ZoomDrawer.of(context)!.toggle();
-        } ,
-
+        },
         child: Scaffold(
           backgroundColor: Color(kLightBlue.value),
           body: Column(
-            mainAxisAlignment:MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               drawerItem(
-                Icon(EvaIcons.menu) as IconData,
-                  "Home",
-                  0,
-                  zoomNotifier.currentIndex==0?
-                  Color(kLight.value):
-                  Color(klightGrey.value),
+                EvaIcons.menu,
+                "Home",
+                0,
+                zoomNotifier.currentIndex == 0
+                    ? Color(kLight.value)
+                    : Color(klightGrey.value),
               ),
               drawerItem(
-                Icon(EvaIcons.activityOutline) as IconData,
+                EvaIcons.activityOutline,
                 "Chat",
                 1,
-                zoomNotifier.currentIndex==0?
-                Color(kLight.value):
-                Color(klightGrey.value),
+                zoomNotifier.currentIndex == 0
+                    ? Color(kLight.value)
+                    : Color(klightGrey.value),
               ),
               drawerItem(
-                Icon(EvaIcons.menu) as IconData,
+                EvaIcons.menu,
                 "BookMark",
                 2,
-                zoomNotifier.currentIndex==0?
-                Color(kLight.value):
-                Color(klightGrey.value),
+                zoomNotifier.currentIndex == 0
+                    ? Color(kLight.value)
+                    : Color(klightGrey.value),
               ),
               drawerItem(
-                Icon(EvaIcons.menu) as IconData,
+                EvaIcons.menu,
                 "Device Mng",
                 3,
                 zoomNotifier.currentIndex == 0
                     ? Color(kLight.value)
                     : Color(klightGrey.value),
               ),
-
               drawerItem(
                 EvaIcons.person,
                 "Profile",
                 5,
-                zoomNotifier.currentIndex==0?
-                Color(kLight.value):
-                Color(klightGrey.value),
+                zoomNotifier.currentIndex == 0
+                    ? Color(kLight.value)
+                    : Color(klightGrey.value),
               ),
             ],
           ),
-
-
-
         ),
       );
     });
@@ -83,12 +78,14 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
 
   drawerItem(IconData icon, String text, int index, Color color) {
     return GestureDetector(
-      onTap: null,
+      onTap: () {
+        // Handle tap event
+      },
       child: Container(
         margin: EdgeInsets.only(left: 20, bottom: 20),
         child: Row(
           children: [
-            Icon(icon, color: color,),
+            Icon(icon, color: color),
             ReusableText(
               text: text,
               style: app_style(size: 12, color: color, fw: FontWeight.bold),
@@ -98,5 +95,4 @@ class _Drawer_ScreenState extends State<Drawer_Screen> {
       ),
     );
   }
-
 }

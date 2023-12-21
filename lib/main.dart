@@ -25,7 +25,6 @@ import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/drawer_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/side_manu.dart';
 import 'package:job_mobile_app/view/ui/on_boarding_screen/page_three.dart';
-import 'package:job_mobile_app/view/ui/drawer/hamda_drawer.dart';
 import 'package:provider/provider.dart';
 
 import 'view/ui/on_boarding_screen/onboarding_screen.dart';

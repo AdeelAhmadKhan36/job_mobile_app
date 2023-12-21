@@ -20,7 +20,7 @@ class JobHorizontalTile extends StatelessWidget {
 
       },
       child: Container(
-        height: 300,
+        height: 200,
         width: 400,
 
         color: Color(klightGrey.value),
@@ -33,6 +33,7 @@ class JobHorizontalTile extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 30,
+                    backgroundImage: AssetImage("Assets/Images/netsol_technologies_inc__logo.jpg"),
                   ),
                   SizedBox(width:10,),
                   Heading(text: "NetSole PVT", color: Color(kDark.value), fontSize: 26, fontWeight: FontWeight.w600)
