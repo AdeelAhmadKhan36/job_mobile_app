@@ -70,7 +70,7 @@ class EmployerDashboard extends StatelessWidget {
                       elevation: 10, // Elevation (shadow depth)
                       shadowColor: Colors.blue,
                     ),
-                    child: const Text(
+                     child: const Text(
                       'Dashboard',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

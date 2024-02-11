@@ -26,15 +26,17 @@ class Search_Page extends StatelessWidget {
 
       ),
       body:
-      Padding(
-        padding: const EdgeInsets.only(top: 200),
-        child: Column(
-          children: [
+      SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 200),
+          child: Column(
+            children: [
 
-            Image.asset("Assets/Images/search-preview.png"),
-            Heading(text: "Start Searching For Jobs", color:Color(kDark.value), fontSize:28, fontWeight:FontWeight.bold)
+              Image.asset("Assets/Images/search-preview.png"),
+              Heading(text: "Start Searching For Jobs", color:Color(kDark.value), fontSize:28, fontWeight:FontWeight.bold)
 
-          ],
+            ],
+          ),
         ),
       ),
 

@@ -3,10 +3,13 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/ui/Splash_Screen.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/admin_home.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/post_job.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:job_mobile_app/view/ui/drawer/drawer_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/drawer_screen.dart';
+import 'package:job_mobile_app/view/ui/on_boarding_screen/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 
 
@@ -42,9 +45,10 @@ class _Main_ScreenState extends State<Main_Screen> {
   Widget currentScreen(Zoom_Notifier zoomNotifier) {
     switch (zoomNotifier.currentIndex) {
       case 0:
-        // return drawer_animated();
-        return EmployerDashboard();
-      case 1:
+        // return OnBoarding_Screen();
+        //  return drawer_animated();
+        // return EmployerDashboard();
+          return JobPostScreen();
         return Home_Screen();
       case 2:
         return Home_Screen();

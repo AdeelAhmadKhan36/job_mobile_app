@@ -2,15 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_mobile_app/controllers/login_provider.dart';
-import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/utils/Round_button.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/Main_Screen.dart';
 import 'package:job_mobile_app/view/ui/auth/signup_screen.dart';
-import 'package:job_mobile_app/view/ui/auth/signup_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../../../resources/constants/app_colors.dart';
 
 
@@ -50,7 +47,9 @@ class _Login_ScreenState extends State<Login_Screen> {
             child: Custom_AppBar(
               title: Text('Login', style: TextStyle(color: Colors.black)),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: Icon(CupertinoIcons.arrow_left),
               ),
             ),

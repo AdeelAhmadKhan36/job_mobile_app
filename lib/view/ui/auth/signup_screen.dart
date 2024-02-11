@@ -50,7 +50,9 @@ class _SignUp_ScreenState extends State<SignUp_Screen> {
             child: Custom_AppBar(
               title: Text('SignUp', style: TextStyle(color: Colors.black)),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: Icon(CupertinoIcons.arrow_left),
               ),
             ),

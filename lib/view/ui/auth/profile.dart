@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:job_mobile_app/constants/app_constant.dart';
+import 'package:job_mobile_app/resources/constants/app_constant.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
@@ -34,11 +34,18 @@ class _Profile_PageState extends State<Profile_Page> {
                         value == 0 ? value = 1 : value = 0;
                       });
                     },
-                    child: Icon(
-                      Icons.menu_rounded,
-                      weight: 50,
-                      color: Color(kLight.value),
-                    ))
+                    child:IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        // Handle back button press
+                        Navigator.pop(context);
+                      },
+                      color: Colors.white,
+                    ),
+
+
+
+                )
               ],
             ),
           ),
