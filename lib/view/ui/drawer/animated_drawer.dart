@@ -35,7 +35,7 @@ class _drawer_animatedState extends State<drawer_animated> {
           // Drawer
           SafeArea(
             child: Container(
-              width: 200,
+              width:230,
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
                 child: Column(

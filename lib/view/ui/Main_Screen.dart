@@ -46,10 +46,10 @@ class _Main_ScreenState extends State<Main_Screen> {
     switch (zoomNotifier.currentIndex) {
       case 0:
         // return OnBoarding_Screen();
-        //  return drawer_animated();
+        return drawer_animated();
         // return EmployerDashboard();
-          return JobPostScreen();
-        return Home_Screen();
+        //   return JobPostScreen();
+        // return Home_Screen();
       case 2:
         return Home_Screen();
       case 3:

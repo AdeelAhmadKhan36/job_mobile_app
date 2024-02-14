@@ -46,12 +46,21 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   rive: ^0.11.17
   animated_size_and_fade: ^3.0.1
+  #Firebase
+  firebase_core: ^2.25.4
+  firebase_storage: ^11.6.5
+  firebase_auth: ^4.17.4
+  firebase_database: ^10.4.5
+  fluttertoast: ^8.2.4
+  firebase_app_check: ^0.2.1+13
+
 
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

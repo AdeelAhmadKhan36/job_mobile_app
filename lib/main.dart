@@ -30,8 +30,14 @@ import 'package:provider/provider.dart';
 import 'view/ui/on_boarding_screen/onboarding_screen.dart';
 import 'view/ui/on_boarding_screen/page_one.dart';
 import 'view/ui/on_boarding_screen/page_two.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async{
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -43,7 +49,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => onBoard_Notifier()),
-        ChangeNotifierProvider(create: (_) => LoginNotifier()),
+        ChangeNotifierProvider(create: (_) => loginNotifier()),
         ChangeNotifierProvider(create: (_) => SignUpNotifier()),
         ChangeNotifierProvider(create: (_) => Zoom_Notifier()),
         ChangeNotifierProvider(create: (_) => Profile_Notifier()),

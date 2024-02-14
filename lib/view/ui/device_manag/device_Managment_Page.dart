@@ -72,7 +72,7 @@ class _device_Managment_PageState extends State<device_Managment_Page> {
                 ],
               ),
             ),
-            Consumer<LoginNotifier>
+            Consumer<loginNotifier>
               (builder:(context, LoginNotifier,child){
                 return GestureDetector(
                   onTap: (){
