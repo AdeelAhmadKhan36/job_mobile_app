@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
 
 import '../../../resources/constants/app_colors.dart';
@@ -49,6 +51,25 @@ class _UserSignUp_ScreenState extends State<UserSignUp_Screen> {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  Future<void> _signUpAndStoreUserData() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final userData = {
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneNumberController.text,
+        // Add other fields as needed
+      };
+
+      // Use FirebaseFirestore.instance if you're using the latest version of cloud_firestore
+      // Import FirebaseFirestore if needed
+      await FirebaseFirestore.instance.collection('Users').doc(user.uid).set(userData);
+    }else{
+
+      print("Error in Collection");
+    }
   }
 
 
@@ -250,6 +271,9 @@ class _UserSignUp_ScreenState extends State<UserSignUp_Screen> {
                                   },
                                   keyboardType: TextInputType.text,
                                 ),
+                                // SizedBox(height: 40),
+                                //Select Option
+
 
                               ],
                             ) ),
@@ -258,31 +282,39 @@ class _UserSignUp_ScreenState extends State<UserSignUp_Screen> {
                         SizedBox(height: 40),
                         RoundButton(
                           title: 'SignUp',
-                          loading: signupNotifier.isLoading, // Pass the isLoading property
+                          loading: signupNotifier.isLoading,
                           onTap: () async {
                             if (_formkey.currentState!.validate()) {
-                              signupNotifier.isLoading = true; // Set isLoading to true when starting the signup process
+                              signupNotifier.isLoading = true;
+
                               try {
                                 // Perform your signup logic here
                                 await _auth.createUserWithEmailAndPassword(
                                   email: emailController.text.toString(),
                                   password: passwordController.text.toString(),
-                                ).then((value){
-                                  Utils().toastMessage("Signup Successful");
-                                }).onError((error, stackTrace) {
-                                  Utils().toastMessage(error.toString());
-                                });
-                                // Set isLoading to false when signup is successful
+                                );
+
+                                // Store user data in Firestore
+                                await _signUpAndStoreUserData();
+
+                                // Set isLoading to false when signup and data storage are successful
                                 signupNotifier.isLoading = false;
+
+                                Utils().toastMessage(" User Signup Successfully ");
+                                Get.to(drawer_animated());
                               } catch (error) {
                                 // Handle signup failure, if needed
                                 print('Signup error: $error');
+
                                 // Set isLoading to false in case of an error
                                 signupNotifier.isLoading = false;
+
+                                Utils().toastMessage(error.toString());
                               }
                             }
                           },
                         ),
+
 
                         SizedBox(height: 8),
                         Row(

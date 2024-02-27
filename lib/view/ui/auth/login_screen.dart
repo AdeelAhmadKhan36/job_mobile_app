@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +12,9 @@ import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/Main_Screen.dart';
 import 'package:job_mobile_app/view/ui/auth/admin_signup.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
 import '../../../resources/constants/app_colors.dart';
-
-
 
 class Login_Screen extends StatefulWidget {
   const Login_Screen({super.key}); // Corrected the constructor
@@ -24,6 +24,7 @@ class Login_Screen extends StatefulWidget {
 }
 
 class _Login_ScreenState extends State<Login_Screen> {
+  String? selectedRole;
   bool _isObscure3 = true;
   bool visible = false;
   bool isLoading = false;
@@ -31,26 +32,109 @@ class _Login_ScreenState extends State<Login_Screen> {
   final _formkey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  
-  
-  final _auth=FirebaseAuth.instance;
+
+  final _auth = FirebaseAuth.instance;
+  // Future<void> login() async {
+  //   try {
+  //     await _auth.signInWithEmailAndPassword(
+  //       email: emailController.text.toString(),
+  //       password: passwordController.text.toString(),
+  //     );
+  //
+  //     Utils().toastMessage("Login Successful");
+  //     print("Login Successful");
+  //
+  //     Get.to(Home_Screen());
+  //   } catch (error) {
+  //     Utils().toastMessage(error.toString());
+  //   }
+  // }
+
+  //Role base login function
 
   Future<void> login() async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: emailController.text.toString(),
         password: passwordController.text.toString(),
-      );
+      ).then((value) {
 
-      Utils().toastMessage("Login Successful");
-      print("Login Successful");
+        Utils().toastMessage("Login Successful");
+      }).onError((error, stackTrace) {
+        Utils().toastMessage(error.toString());
+      });
 
-      Get.to(Home_Screen());
+
+
+      if (selectedRole == 'Login as User') {
+        // Check if the user exists in the "users" collection
+        bool userExists = await checkUserExists();
+        if (userExists) {
+          // Move to User Screen
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Home_Screen()));
+        } else {
+          Utils().toastMessage("User not found. Please sign up.");
+        }
+      } else if (selectedRole == 'Login as Admin') {
+        // Check if the admin exists in the "admins" collection
+        bool adminExists = await checkAdminExists();
+        if (adminExists) {
+          // Move to Admin Screen
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => drawer_animated()));
+        } else {
+          Utils().toastMessage("Admin not found. Please sign up.");
+        }
+      } else {
+        Utils().toastMessage("Role not recognized. Please sign up.");
+      }
     } catch (error) {
       Utils().toastMessage(error.toString());
     }
   }
 
+  Future<bool> checkUserExists() async {
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        // Use the `get` method to check if the document with the specified userId exists
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(currentUser.uid)
+            .get();
+
+        // Return true if the document exists
+        return userSnapshot.exists;
+      }
+      return false;
+    } catch (error) {
+      // Handle errors, e.g., connection issues, etc.
+      print("Error checking user existence: $error");
+      return false;
+    }
+  }
+
+  Future<bool> checkAdminExists() async {
+    try {
+      User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        // Use the `get` method to check if the document with the specified adminId exists
+        DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance
+            .collection('Admins')
+            .doc(currentUser.uid)
+            .get();
+
+        // Return true if the document exists
+        return adminSnapshot.exists;
+      }
+      return false;
+    } catch (error) {
+      // Handle errors, e.g., connection issues, etc.
+      print("Error checking admin existence: $error");
+      return false;
+    }
+  }
 
   // Corrected the method override with @override
   @override
@@ -87,12 +171,12 @@ class _Login_ScreenState extends State<Login_Screen> {
                   Heading(
                     text: 'Welcome Back!',
                     color: Color(kDark.value),
-
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
                   ),
                   ReusableText(
-                    text: 'Fill the details to login to your account', // Corrected the text
+                    text:
+                        'Fill the details to login to your account', // Corrected the text
                     color: Color(kDarkGrey.value),
                   ),
                   SizedBox(height: 80),
@@ -100,101 +184,181 @@ class _Login_ScreenState extends State<Login_Screen> {
                     key: _formkey,
                     child: Column(
                       children: [
-                      TextFormField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(kGrey.value),
-                        hintText: 'Email',
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Email cannot be empty";
-                        }
-                        if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
-                            .hasMatch(value)) {
-                          return "Please enter a valid email";
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    SizedBox(height: 40),
-                    TextFormField(
-                      controller: passwordController,
-                      obscureText: _isObscure3,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            _isObscure3=loginNotifier.obsecuretext;
-                           loginNotifier.obsecuretext=!loginNotifier.obsecuretext;
-                          },
-                          child: Icon(
-                            loginNotifier.obsecuretext ? Icons.visibility : Icons.visibility_off,
+                        TextFormField(
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Color(kGrey.value),
+                            hintText: 'Email',
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
-                        ),
-                        filled: true,
-                        fillColor: Color(kGrey.value),
-                        hintText: 'Password',
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      validator: (value) {
-                        final regex = RegExp(r'^.{6,}$');
-                        if (value!.isEmpty) {
-                          return "Password cannot be empty";
-                        }
-                        if (!regex.hasMatch(value)) {
-                          return "Please enter a valid password (min. 6 characters)";
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.text,
-                    ),
-                    SizedBox(height: 80),
-                    RoundButton(
-                      title: 'Login',
-                      loading: loginNotifier.isLoading,
-                      onTap: ()async {
-                        loginNotifier.isLoading=true;
-                        if(_formkey.currentState!.validate()){
-                          await login();
-                          loginNotifier.isLoading = false;
-                        }
-
-
-                      },
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("Don't have an account ",style: TextStyle(color: Colors.redAccent,decoration:TextDecoration.underline),),
-                        InkWell(
-                          onTap: () {
-
-                            showSignupOptions(context);
-
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Email cannot be empty";
+                            }
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
+                                .hasMatch(value)) {
+                              return "Please enter a valid email";
+                            }
+                            return null;
                           },
-                          child: Text('Signup', style: TextStyle(color: Color(kblue.value),fontWeight: FontWeight.bold),
-                          ),
+                          keyboardType: TextInputType.emailAddress,
                         ),
+                        SizedBox(height: 40),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: _isObscure3,
+                          decoration: InputDecoration(
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                _isObscure3 = loginNotifier.obsecuretext;
+                                loginNotifier.obsecuretext =
+                                    !loginNotifier.obsecuretext;
+                              },
+                              child: Icon(
+                                loginNotifier.obsecuretext
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Color(kGrey.value),
+                            hintText: 'Password',
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          validator: (value) {
+                            final regex = RegExp(r'^.{6,}$');
+                            if (value!.isEmpty) {
+                              return "Password cannot be empty";
+                            }
+                            if (!regex.hasMatch(value)) {
+                              return "Please enter a valid password (min. 6 characters)";
+                            }
+                            return null;
+                          },
+                          keyboardType: TextInputType.text,
+                        ),
+                        SizedBox(height: 40),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.arrow_drop_down),
+                            filled: true,
+                            fillColor: Color(kGrey.value),
+                            hintText: 'Select Option',
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          style: TextStyle(color: Colors.black),
+                          readOnly: true,
+                          onTap: () {
+                            // Show the AlertDialog with options
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Select Role'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // Set selectedRole to 'User' and close the dialog
+                                          setState(() {
+                                            selectedRole = 'Login as User';
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Color(kprimary_colors.value),
+                                        ),
+                                        child: Text('Login as User',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ),
+                                      SizedBox(height: 10),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // Set selectedRole to 'Admin' and close the dialog
+                                          setState(() {
+                                            selectedRole = 'Login as Admin';
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Color(kprimary_colors.value),
+                                        ),
+                                        child: Text('Login as Admin',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          // Display the selected role in the TextFormField
+                          controller: TextEditingController(text: selectedRole),
+                        ),
+                        SizedBox(height: 80),
+                        RoundButton(
+                          title: 'Login',
+                          loading: loginNotifier.isLoading,
+                          onTap: () async {
+                            loginNotifier.isLoading = true;
+                            if (_formkey.currentState!.validate()) {
+                              await login();
+                              loginNotifier.isLoading = false;
+                            }
+                          },
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Don't have an account ",
+                              style: TextStyle(
+                                  color: Colors.redAccent,
+                                  decoration: TextDecoration.underline),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                showSignupOptions(context);
+                              },
+                              child: Text(
+                                'Signup',
+                                style: TextStyle(
+                                    color: Color(kblue.value),
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
-                    )],
                     ),
                   ),
                 ],
@@ -206,8 +370,6 @@ class _Login_ScreenState extends State<Login_Screen> {
     );
   }
 }
-
-
 
 void showSignupOptions(BuildContext context) {
   showDialog(
@@ -224,18 +386,18 @@ void showSignupOptions(BuildContext context) {
               child: ElevatedButton(
                 onPressed: () {
                   // Handle user signup
-                  Navigator.pop(context);// Close the dialog
+                  Navigator.pop(context); // Close the dialog
 
                   Get.to(UserSignUp_Screen());
                   // Navigate to user signup screen or perform the signup logic
                 },
-
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(kprimary_colors.value),
-
                 ),
-
-                child: Text('Sign Up as User',style: TextStyle(color: Colors.white),),
+                child: Text(
+                  'Sign Up as User',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             SizedBox(height: 10),
@@ -246,14 +408,16 @@ void showSignupOptions(BuildContext context) {
                 onPressed: () {
                   // Handle admin signup
                   Navigator.pop(context);
-                  Get.to(AdminSignUp_Screen());// Close the dialog
+                  Get.to(AdminSignUp_Screen()); // Close the dialog
                   // Navigate to admin signup screen or perform the signup logic
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(kprimary_colors.value),
-
                 ),
-                child: Text('Sign Up as Admin',style: TextStyle(color: Colors.white),),
+                child: Text(
+                  'Sign Up as Admin',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],

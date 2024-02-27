@@ -6,6 +6,7 @@ class Custom_AppBar extends StatelessWidget {
   final String? text;
   final Widget child;
   final Widget? title;
+  final Widget? iconbutton;
   final List<Widget>? actions;
 
   const Custom_AppBar({
@@ -14,6 +15,7 @@ class Custom_AppBar extends StatelessWidget {
     required this.child,
     this.title,
     this.actions,
+    this.iconbutton
   }) : super(key: key);
 
   @override

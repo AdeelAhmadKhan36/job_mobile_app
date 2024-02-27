@@ -13,36 +13,7 @@ class EmployerDashboard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.menu,
-                      weight: 50,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      // Handle menu button press
-                    },
-                  ),
-                  const SizedBox(width: 80),
-                  Heading(
-                      text: "Job Portal",
-                      color: Color(kDark.value),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.mark_unread_chat_alt, size: 30),
-                    onPressed: () {
-                      // Handle search icon press
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+
               Row(
                 children: [
                   ElevatedButton(
@@ -104,7 +75,7 @@ class EmployerDashboard extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    height: 200,
+                    height: 220,
                     decoration: const BoxDecoration(
                         color: Colors.indigoAccent,
                         borderRadius: BorderRadius.all(Radius.circular(30))),
@@ -187,7 +158,7 @@ class EmployerDashboard extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 20,
+                                  width: 15,
                                 ),
                                 ElevatedButton(
                                   onPressed: () {},
@@ -204,7 +175,7 @@ class EmployerDashboard extends StatelessWidget {
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(top: 8,bottom: 8),
                                     child: Column(
                                       children: [
                                         Heading(
@@ -216,7 +187,7 @@ class EmployerDashboard extends StatelessWidget {
                                           height: 10,
                                         ),
                                         Heading(
-                                            text: 'Applications',
+                                            text: 'Application',
                                             color: Color(kLight.value),
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),

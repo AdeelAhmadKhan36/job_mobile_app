@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:job_mobile_app/utils/Round_button.dart';
 import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/admin_home.dart';
 import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +47,23 @@ class _AdminSignUp_ScreenState extends State<AdminSignUp_Screen> {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+  Future<void> StoreAdmin_Data() async{
+
+    final admin = _auth.currentUser;
+    if(admin!=null){
+      final userData={
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneNumberController.text,
+      };
+
+      await FirebaseFirestore.instance.collection('Admins').doc(admin.uid).set(userData);
+
+    }else{
+      print('Error in Collection');
+    }
+
   }
 
   @override
@@ -259,18 +278,18 @@ class _AdminSignUp_ScreenState extends State<AdminSignUp_Screen> {
                                     email:emailController.text.toString(),
                                     password: passwordController.text.toString()
 
-                                ).then((value) {
-                                  Utils().toastMessage("Signup Successful");
-                                }).onError((error, stackTrace){
-                                  Utils().toastMessage(error.toString());
-                                });
+                                );
+                                await StoreAdmin_Data();
                                 signupNotifier.isLoading = false;
+                                Utils().toastMessage("Admin Signup Successfully ");
+                                Get.to(EmployerDashboard());
+
+
 
                               }catch(error){
                                 print('Signup error: $error');
                                 signupNotifier.isLoading=false;
-
-
+                                Utils().toastMessage(error.toString());
                               }
                             }
 

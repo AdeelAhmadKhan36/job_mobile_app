@@ -2,18 +2,21 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:job_mobile_app/home_screen.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/infor_card.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/common/smenu_sidebar_tile.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/admin_home.dart';
 
-class drawer_animated extends StatefulWidget {
-  const drawer_animated({Key? key}) : super(key: key);
+class admin_main_page extends StatefulWidget {
+  const admin_main_page({Key? key}) : super(key: key);
 
   @override
-  _drawer_animatedState createState() => _drawer_animatedState();
+  _admin_main_pageState createState() => _admin_main_pageState();
 }
 
-class _drawer_animatedState extends State<drawer_animated> {
+class _admin_main_pageState extends State<admin_main_page> {
   double value = 0;
 
   @override
@@ -79,43 +82,55 @@ class _drawer_animatedState extends State<drawer_animated> {
                   ..setEntry(0, 3,210 * val)
                   ..rotateY((pi / 6) * val),
                 child: Scaffold(
-                appBar: PreferredSize(preferredSize:Size.fromHeight(50),
-                    child: Custom_AppBar(
-                      actions: [
-                        Padding(
-                          padding: EdgeInsets.all(12),
-                          child: const CircleAvatar(
-                            radius: 15,
-                            backgroundImage:AssetImage("Assets/Images/ak1.jpg") ,
+                  appBar: PreferredSize(preferredSize:Size.fromHeight(50),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 2,left: 2,right: 2),
+                        child: Custom_AppBar(
+
+                          title: Heading(
+                              text: "Job Portal",
+                              color: Color(kDark.value),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+
+                          actions: [
+                            IconButton(
+                              icon: const Icon(Icons.notifications_active, size: 30),
+                              onPressed: () {
+                                // Handle search icon press
+                              },
+                            ),
+
+                          ],
+                          child: Column(
+                            children: [
+                              MaterialButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      value== 0 ? value = 1 : value = 0;
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Icon(Icons.menu_rounded,weight:50,size: 30,),
+                                  )
+                              )
+                            ],
                           ),
+
                         ),
-
-                      ],
-                      child: Column(
-                        children: [
-                          MaterialButton(
-                            onPressed: () {
-                              setState(() {
-                                value== 0 ? value = 1 : value = 0;
-                              });
-                            },
-                            child: Icon(Icons.menu_rounded,weight:50,)
-                          )
-                        ],
-                      ),
-
-                    )),
+                      )),
 
 
                   body: Center(
-                    child: Home_Screen()
+                      child: EmployerDashboard()
+
+                    // Home_Screen()
                   ),
                 ),
               );
             },
           ),
-
-
         ],
       ),
     );

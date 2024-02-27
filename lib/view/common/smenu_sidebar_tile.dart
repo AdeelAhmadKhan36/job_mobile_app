@@ -35,10 +35,12 @@ class _SidemenuTileState extends State<SidemenuTile> {
             buildDivider(),
             buildListTile(4, Icons.supervised_user_circle_rounded, 'Profile'),
             buildDivider(),
-            buildSectionHeader("History"),
-            buildListTile(5, Icons.history, 'History'),
+            // buildSectionHeader("History"),
+            // buildListTile(5, Icons.history, 'History'),
             buildDivider(),
-            buildListTile(6, Icons.notifications_active_sharp, 'Notifications'),
+            buildListTile(5, Icons.notifications_active_sharp, 'Notifications'),
+            buildDivider(),
+            buildListTile(6, Icons.logout, 'Logout'),
             buildDivider(),
           ],
         );
@@ -104,10 +106,10 @@ class _SidemenuTileState extends State<SidemenuTile> {
                           Navigator.of(context).pushReplacementNamed('/profile');
                           break;
                         case 5:
-                          Navigator.of(context).pushReplacementNamed('/history');
+                          Navigator.of(context).pushReplacementNamed('/notifications');
                           break;
                         case 6:
-                          Navigator.of(context).pushReplacementNamed('/notifications');
+                          Navigator.of(context).pushReplacementNamed('/logout');
                           break;
                       }
                     },
