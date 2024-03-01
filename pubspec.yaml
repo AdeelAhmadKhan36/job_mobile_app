@@ -48,12 +48,13 @@ dependencies:
   animated_size_and_fade: ^3.0.1
   #Firebase
   firebase_core: ^2.25.4
-  firebase_storage: ^11.6.5
   firebase_auth: ^4.17.4
   firebase_database: ^10.4.5
   fluttertoast: ^8.2.4
   firebase_app_check: ^0.2.1+13
   cloud_firestore: ^4.15.5
+  image_picker: ^1.0.7
+  firebase_storage: ^11.6.7
 
 
 

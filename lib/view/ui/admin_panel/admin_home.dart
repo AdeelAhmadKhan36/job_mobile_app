@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/post_job.dart';
 
 class EmployerDashboard extends StatelessWidget {
   @override
@@ -200,17 +204,23 @@ class EmployerDashboard extends StatelessWidget {
                             const SizedBox(
                               height: 20,
                             ),
-                            Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  color: Color(kDarkBlue.value),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Center(
-                                  child: Heading(
-                                      text: 'Post a Job',
-                                      color: Color(kLight.value),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
+                            GestureDetector(
+                              onTap: (){
+                                Get.to(JobPostScreen());
+                              },
+
+                              child: Container(
+                                height: 100,
+                                decoration: BoxDecoration(
+                                    color: Color(kDarkBlue.value),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                    child: Heading(
+                                        text: 'Post a Job',
+                                        color: Color(kLight.value),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold)),
+                              ),
                             ),
                             const SizedBox(
                               height: 20,

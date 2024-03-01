@@ -10,6 +10,7 @@ import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/Main_Screen.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/admin_drawer.dart';
 import 'package:job_mobile_app/view/ui/auth/admin_signup.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
@@ -82,7 +83,7 @@ class _Login_ScreenState extends State<Login_Screen> {
         if (adminExists) {
           // Move to Admin Screen
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => drawer_animated()));
+              MaterialPageRoute(builder: (context) => admin_main_page()));
         } else {
           Utils().toastMessage("Admin not found. Please sign up.");
         }
