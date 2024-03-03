@@ -19,11 +19,13 @@ class _JobPostScreenState extends State<JobPostScreen> {
   File? _image;
   final picker = ImagePicker();
   final _formkey=GlobalKey<FormState>();
-  String  selectedSalary = ''; // Add this variable to store the selected salary
+  String ? selectedSalary = '';
+  String ? selectedJobTiming = '';
 
 
   TextEditingController companyNameController = TextEditingController();
   TextEditingController jobtitleController=TextEditingController();
+  TextEditingController joblocationController=TextEditingController();
   TextEditingController salaryController=TextEditingController();
   TextEditingController descriptionController=TextEditingController();
   TextEditingController requirementController=TextEditingController();
@@ -77,9 +79,12 @@ class _JobPostScreenState extends State<JobPostScreen> {
           'companyName': companyNameController.text,
           'imageUrl': imageUrl,
           'jobTitle': jobtitleController.text,
+          'jobLocation': joblocationController.text,
+          'jobTiming': selectedJobTiming,
           'salary': selectedSalary,
           'jobDescription': descriptionController.text,
           'jobRequirements': requirementController.text,
+          'timestamp': FieldValue.serverTimestamp(),
           // Add more fields as needed
         };
 
@@ -94,6 +99,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
 
         descriptionController.clear();
         requirementController.clear();
+        joblocationController.clear();
 
 
 
@@ -103,7 +109,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
         });
 
         setState(() {
-          selectedSalary = ''; // Set it to an empty string or null based on your logic
+          selectedSalary = null; // Set it to an empty string or null based on your logic
         });
 
 
@@ -113,7 +119,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
         });
       } catch (error) {
         Utils().toastMessage(error.toString());
-        print("Error uploading image: $error");
+        print("Error: $error");
       }
     }
   }
@@ -123,27 +129,15 @@ class _JobPostScreenState extends State<JobPostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20.0),
-              bottomRight: Radius.circular(20.0),
-            ),
-            color: Color(kmycolor.value),
-          ),
-          child: Center(
-            child: Text(
-              'Post a Job',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+
+          Navigator.pop(context);
+
+        }, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+        title: Text('Post Job',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+        centerTitle: true,
+        backgroundColor: Color(kmycolor.value),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -205,12 +199,42 @@ class _JobPostScreenState extends State<JobPostScreen> {
               SizedBox(height: 16.0),
               TextFormField(
                 controller: jobtitleController,
-                decoration: InputDecoration(labelText: 'Job Title'),
+                decoration: InputDecoration(labelText: 'Job Title:'),
+              ),
+
+
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: joblocationController,
+                decoration: InputDecoration(labelText: 'Job Location:'),
               ),
               SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                value: selectedSalary,
 
+              DropdownButtonFormField<String>(
+                // value: selectedJobTiming,
+                decoration: InputDecoration(labelText: 'Select Job Timing'),
+                items: [
+                  'Full Time',
+                  'Part Time',
+                  'Remote',
+                  // Add more job timing options as needed
+                ].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    selectedJobTiming = value ?? '';
+                  });
+                },
+              ),
+
+
+              SizedBox(height: 16.0),
+              DropdownButtonFormField<String>(
+                // value: selectedSalary,
                 decoration: InputDecoration(labelText: 'Select Salary'),
                 items: [
                   '10000',
@@ -243,11 +267,11 @@ class _JobPostScreenState extends State<JobPostScreen> {
                   );
                 }).toList(),
                 onChanged: (String? value) {
-
-                  setState(() {
-                    selectedSalary = value ?? ''; // Update the selectedSalary variable
-                  });
-
+                  if (value != null) {
+                    setState(() {
+                      selectedSalary = value;
+                    });
+                  }
                 },
               ),
               SizedBox(height: 16.0),
