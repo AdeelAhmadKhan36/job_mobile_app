@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/Jobs/Jobs_page.dart';
 
 class VerticalTile extends StatelessWidget {
   const VerticalTile({Key? key, required Null Function() onTap}) : super(key: key);
@@ -57,37 +60,55 @@ class VerticalTile extends StatelessWidget {
                       backgroundImage: NetworkImage(imageUrl),
                     ),
                     SizedBox(width: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    Expanded( // Wrap with Expanded to take up all available space
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Heading(
-                              text: companyName,
-                              color: Color(kDark.value),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Heading(
+                                  text: companyName,
+                                  color: Color(kDark.value),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(
+                                    jobTitle,
+                                    style: TextStyle(
+                                      color: Color(kDarkGrey.value),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              jobTitle,
-                              style: TextStyle(
-                                color: Color(kDarkGrey.value),
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 50,bottom: 18),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(() => Job_Page(
+                                    title: mostRecentJob['companyName'],
+                                    id: mostRecentJob.id,
+                                  ));
+                                },
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: Color(kLight.value),
+                                  child: Icon(Icons.arrow_forward_ios_rounded, color: Color(kOrange.value)),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 60),
-                          child: CircleAvatar(
-                            radius: 18,
-                            backgroundColor: Color(kLight.value),
-                            child: Icon(Icons.arrow_forward_ios_rounded),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),

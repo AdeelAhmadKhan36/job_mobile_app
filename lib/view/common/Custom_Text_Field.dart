@@ -11,6 +11,7 @@ class Custom_Text_Field extends StatelessWidget {
     this.suffixicon,
     this.onEditingComplete,
     this.obsecureText, required this.controller,
+    required Color cursorColor,
   }) : super(key: key);
    final TextEditingController controller;
   final String hintText;

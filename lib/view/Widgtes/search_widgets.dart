@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 
-class search_widget extends StatelessWidget {
+class SearchWidget extends StatelessWidget {
   final void Function()? onTap;
 
-  const search_widget({Key? key, this.onTap}) : super(key: key);
+  const SearchWidget({Key? key, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,5 +57,3 @@ class search_widget extends StatelessWidget {
     );
   }
 }
-
-
