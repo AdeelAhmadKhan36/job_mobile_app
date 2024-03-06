@@ -8,9 +8,10 @@ import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/auth/profile.dart';
 
 class Job_Page extends StatefulWidget {
-  const Job_Page({super.key, required this.id, required title});
+  const Job_Page({Key? key, required this.id, required this.title}) : super(key: key);
 
   final String id;
+  final String title;
 
   @override
   State<Job_Page> createState() => _Job_PageState();
@@ -31,10 +32,7 @@ class _Job_PageState extends State<Job_Page> {
             ),
             title: Text(
               'Job Details',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Color(kDark.value),
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, color: Color(kDark.value), fontWeight: FontWeight.bold),
             ),
             actions: [
               Padding(
@@ -45,18 +43,18 @@ class _Job_PageState extends State<Job_Page> {
           ),
         ),
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('Jobs').doc(widget.id).snapshots(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(child: Text('Error loading job details'));
           }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+          var job = snapshot.data!.data() as Map<String, dynamic>?;
 
-          var job = snapshot.data?.data() as Map<String, dynamic>;
+          if (job == null) {
+            return Center(child: Text('Job details not found'));
+          }
 
           return SingleChildScrollView(
             child: Padding(
@@ -74,19 +72,19 @@ class _Job_PageState extends State<Job_Page> {
                           padding: const EdgeInsets.only(top: 10),
                           child: CircleAvatar(
                             radius: 25,
-                            backgroundImage: NetworkImage(job['imageUrl']),
+                            backgroundImage: NetworkImage(job['imageUrl'] ?? ''),
                           ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
                         Heading(
-                            text: job['jobTitle'],
+                            text: job['jobTitle'] ?? '',
                             color: Color(kDark.value),
                             fontSize: 22,
                             fontWeight: FontWeight.w600),
                         Text(
-                          job['jobLocation'],
+                          job['jobLocation'] ?? '',
                           style: TextStyle(
                               color: Color(kDarkGrey.value),
                               fontSize: 16,
@@ -104,11 +102,11 @@ class _Job_PageState extends State<Job_Page> {
                                 height: 30,
                                 width: 85,
                                 color2: Color(kLight.value),
-                                text: job['jobTiming'],
+                                text: job['jobTiming'] ?? '',
                                 color: Color(kOrange.value),
                               ),
                               Heading(
-                                  text: "${job['salary']}/Month",
+                                  text: "${job['salary'] ?? ''}/Month",
                                   color: Color(kDark.value),
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600),
@@ -126,9 +124,9 @@ class _Job_PageState extends State<Job_Page> {
                       color: Color(kDark.value),
                       fontSize: 22,
                       fontWeight: FontWeight.bold),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   Text(
-                    job['jobDescription'],
+                    job['jobDescription'] ?? '',
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(kDarkGrey.value),
@@ -143,7 +141,7 @@ class _Job_PageState extends State<Job_Page> {
                       color: Color(kDark.value),
                       fontSize: 22,
                       fontWeight: FontWeight.bold),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   BulletPointsList(
                     points: (job['jobRequirements'] is String)
                         ? (job['jobRequirements'] as String).split('\n').map((line) => line.trim()).toList()
@@ -152,9 +150,6 @@ class _Job_PageState extends State<Job_Page> {
                         .whereType<String>()
                         .toList(),
                   ),
-
-
-
                 ],
               ),
             ),

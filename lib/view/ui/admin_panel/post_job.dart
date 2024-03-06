@@ -89,7 +89,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
           // Add more fields as needed
         };
 
-        // Submit job data to Firestore
+        //Submit job data to Firestore
         await _firestore.collection('Jobs').add(jobData);
 
 
