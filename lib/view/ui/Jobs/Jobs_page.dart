@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/Widgtes/requirements.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/custom_outline_button.dart';
@@ -8,7 +9,8 @@ import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/auth/profile.dart';
 
 class Job_Page extends StatefulWidget {
-  const Job_Page({Key? key, required this.id, required this.title}) : super(key: key);
+  const Job_Page({Key? key, required this.id, required this.title})
+      : super(key: key);
 
   final String id;
   final String title;
@@ -18,6 +20,76 @@ class Job_Page extends StatefulWidget {
 }
 
 class _Job_PageState extends State<Job_Page> {
+  bool isBookmarked = false;
+  Map<String, dynamic>? jobData;
+
+  @override
+  void initState() {
+    super.initState();
+    checkBookmarkStatus();
+  }
+
+  Future<void> checkBookmarkStatus() async {
+    try {
+      DocumentSnapshot bookmarkDoc = await FirebaseFirestore.instance
+          .collection('bookmarks')
+          .doc(widget.id)
+          .get();
+
+      setState(() {
+        isBookmarked = bookmarkDoc.exists;
+      });
+    } catch (e) {
+      print('Error checking bookmark status: $e');
+    }
+  }
+
+  Future<void> toggleBookmark() async {
+    CollectionReference bookmarksCollection =
+        FirebaseFirestore.instance.collection('bookmarks');
+
+    try {
+      DocumentSnapshot bookmarkDoc = await FirebaseFirestore.instance
+          .collection('bookmarks')
+          .doc(widget.id)
+          .get();
+
+      if (bookmarkDoc.exists) {
+        await FirebaseFirestore.instance
+            .collection('bookmarks')
+            .doc(widget.id)
+            .delete();
+        UtilMessage().toastMessage('BookMark Removed Successfully');
+
+      } else {
+        await FirebaseFirestore.instance
+            .collection('bookmarks')
+            .doc(widget.id)
+            .set({
+          'companyName': jobData!['companyName'],
+          'imageUrl': jobData!['imageUrl'],
+          'jobTitle': jobData!['jobTitle'],
+          'jobLocation': jobData!['jobLocation'],
+          'jobTiming': jobData!['jobTiming'],
+          'salary': jobData!['salary'],
+          'timestamp': FieldValue.serverTimestamp(),
+          'popularity': 0,
+        });
+        UtilMessage().toastMessage('BookMark Added Successfully');
+      }
+    } catch (e) {
+      print('Error toggling bookmark: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error Toggling Bookmark'),
+      ));
+    }
+
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,27 +104,42 @@ class _Job_PageState extends State<Job_Page> {
             ),
             title: Text(
               'Job Details',
-              style: TextStyle(fontSize: 20, color: Color(kDark.value), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(kDark.value),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: Icon(Icons.bookmark),
-              )
+                padding: const EdgeInsets.only(right: 12, bottom: 20),
+                child: GestureDetector(
+                  onTap: () {
+                    toggleBookmark();
+                    print('Bookmark');
+                  },
+                  child: Icon(
+                    isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('Jobs').doc(widget.id).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('Jobs')
+            .doc(widget.id)
+            .snapshots(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError || !snapshot.hasData) {
             return Center(child: Text('Error loading job details'));
           }
 
-          var job = snapshot.data!.data() as Map<String, dynamic>?;
+          jobData = snapshot.data!.data() as Map<String, dynamic>?;
 
-          if (job == null) {
+          if (jobData == null) {
             return Center(child: Text('Job details not found'));
           }
 
@@ -72,23 +159,26 @@ class _Job_PageState extends State<Job_Page> {
                           padding: const EdgeInsets.only(top: 10),
                           child: CircleAvatar(
                             radius: 25,
-                            backgroundImage: NetworkImage(job['imageUrl'] ?? ''),
+                            backgroundImage:
+                                NetworkImage(jobData!['imageUrl'] ?? ''),
                           ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
                         Heading(
-                            text: job['jobTitle'] ?? '',
-                            color: Color(kDark.value),
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600),
+                          text: jobData!['jobTitle'] ?? '',
+                          color: Color(kDark.value),
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
                         Text(
-                          job['jobLocation'] ?? '',
+                          jobData!['jobLocation'] ?? '',
                           style: TextStyle(
-                              color: Color(kDarkGrey.value),
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                            color: Color(kDarkGrey.value),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         SizedBox(
                           height: 20,
@@ -102,14 +192,15 @@ class _Job_PageState extends State<Job_Page> {
                                 height: 30,
                                 width: 85,
                                 color2: Color(kLight.value),
-                                text: job['jobTiming'] ?? '',
+                                text: jobData!['jobTiming'] ?? '',
                                 color: Color(kOrange.value),
                               ),
                               Heading(
-                                  text: "${job['salary'] ?? ''}/Month",
-                                  color: Color(kDark.value),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600),
+                                text: "${jobData!['salary'] ?? ''}/Month",
+                                color: Color(kDark.value),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ],
                           ),
                         ),
@@ -120,13 +211,14 @@ class _Job_PageState extends State<Job_Page> {
                     height: 20,
                   ),
                   Heading(
-                      text: "Job Description",
-                      color: Color(kDark.value),
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold),
+                    text: "Job Description",
+                    color: Color(kDark.value),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                   SizedBox(height: 10),
                   Text(
-                    job['jobDescription'] ?? '',
+                    jobData!['jobDescription'] ?? '',
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(kDarkGrey.value),
@@ -137,18 +229,22 @@ class _Job_PageState extends State<Job_Page> {
                     height: 20,
                   ),
                   Heading(
-                      text: "Requirements",
-                      color: Color(kDark.value),
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold),
+                    text: "Requirements",
+                    color: Color(kDark.value),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                   SizedBox(height: 10),
                   BulletPointsList(
-                    points: (job['jobRequirements'] is String)
-                        ? (job['jobRequirements'] as String).split('\n').map((line) => line.trim()).toList()
-                        : (job['jobRequirements'] as List<dynamic>? ?? [])
-                        .map((dynamic item) => item.toString())
-                        .whereType<String>()
-                        .toList(),
+                    points: (jobData!['jobRequirements'] is String)
+                        ? (jobData!['jobRequirements'] as String)
+                            .split('\n')
+                            .map((line) => line.trim())
+                            .toList()
+                        : (jobData!['jobRequirements'] as List<dynamic>? ?? [])
+                            .map((dynamic item) => item.toString())
+                            .whereType<String>()
+                            .toList(),
                   ),
                 ],
               ),
@@ -160,7 +256,8 @@ class _Job_PageState extends State<Job_Page> {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
         child: GestureDetector(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Profile_Page()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Profile_Page()));
           },
           child: Container(
             height: 50,
@@ -169,7 +266,11 @@ class _Job_PageState extends State<Job_Page> {
             child: Center(
               child: Text(
                 "Apply Now",
-                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

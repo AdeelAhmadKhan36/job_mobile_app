@@ -80,10 +80,9 @@ class _Profile_PageState extends State<Profile_Page> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: Image.asset(
-                            'Assets/Images/pencil.png', // Replace 'your_image.png' with the actual asset image path
+                            'Assets/Images/pencil.png',
                             width: 30, // Adjust the width as needed
                             height: 30, // Adjust the height as needed
-                            // You can customize other properties like fit, alignment, etc.
                           ),
                         ),
                       ],
