@@ -66,18 +66,18 @@ class _drawer_animatedState extends State<drawer_animated> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                         if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         }
                         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Text('No data available');
+                          return const Text('No data available');
                         }
 
                         final documents = snapshot.data!.docs;
                         userData = documents.first.data()
-                            as Map<String, dynamic>; // Update userData here
+                        as Map<String, dynamic>;                 // Update userData here
                         // print('Here is your data: $userData');
 
                         return InfoCard(
@@ -123,17 +123,17 @@ class _drawer_animatedState extends State<drawer_animated> {
                   ..rotateY((pi / 6) * val),
                 child: Scaffold(
                   appBar: PreferredSize(
-                    preferredSize: Size.fromHeight(50),
+                    preferredSize: const Size.fromHeight(50),
                     child: Custom_AppBar(
                       actions: [
                         Padding(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           child: CircleAvatar(
-                            radius: 15,
+                            radius: 25,
                             // Use a placeholder image from assets or a default image URL here
                             backgroundImage: userData?['profileImageUrl'] != null
                                 ? NetworkImage(userData?['profileImageUrl']!)
-                                : AssetImage('Assets/Images/dp.png') as ImageProvider, // Use default from assets if URL not available
+                                : const AssetImage('Assets/Images/profile.png') as ImageProvider, // Use default from assets if URL not available
                           ),
 
                         ),
@@ -146,13 +146,13 @@ class _drawer_animatedState extends State<drawer_animated> {
                                 value == 0 ? value = 1 : value = 0;
                               });
                             },
-                            child: Icon(Icons.menu_rounded, weight: 50),
+                            child: const Icon(Icons.menu_rounded, weight: 50),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  body: Center(child: Home_Screen()),
+                  body: const Center(child: Home_Screen()),
                 ),
               );
             },
