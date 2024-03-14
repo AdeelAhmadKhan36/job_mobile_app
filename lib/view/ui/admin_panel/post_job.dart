@@ -51,8 +51,9 @@ class _JobPostScreenState extends State<JobPostScreen> {
       print("No Image has been picked");
     }
   }
-  Future<void> postJob() async {
 
+
+  Future<void> postJob() async {
 
     // Validate the form before submitting
     if (_formkey.currentState!.validate()) {

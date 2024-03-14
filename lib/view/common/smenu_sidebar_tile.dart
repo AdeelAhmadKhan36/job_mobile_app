@@ -8,7 +8,7 @@ import 'package:job_mobile_app/controllers/history_provider.dart';
 import 'package:job_mobile_app/controllers/profile_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
-import 'package:job_mobile_app/view/ui/auth/profile.dart';
+import 'package:job_mobile_app/view/ui/Profile/profile.dart';
 
 
 class SidemenuTile extends StatefulWidget {

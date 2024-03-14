@@ -6,7 +6,7 @@ import 'package:job_mobile_app/view/Widgtes/requirements.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/custom_outline_button.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
-import 'package:job_mobile_app/view/ui/auth/profile.dart';
+import 'package:job_mobile_app/view/ui/Profile/profile.dart';
 
 class Job_Page extends StatefulWidget {
   const Job_Page({Key? key, required this.id, required this.title})

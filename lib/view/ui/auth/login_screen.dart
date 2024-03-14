@@ -10,6 +10,7 @@ import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/Main_Screen.dart';
+import 'package:job_mobile_app/view/ui/Profile/profile_details.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/admin_drawer.dart';
 import 'package:job_mobile_app/view/ui/auth/admin_signup.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
@@ -73,7 +74,7 @@ class _Login_ScreenState extends State<Login_Screen> {
         if (userExists) {
           // Move to User Screen
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Home_Screen()));
+              context, MaterialPageRoute(builder: (context) => Profile_Details()));
         } else {
           Utils().toastMessage("User not found. Please sign up.");
         }

@@ -10,13 +10,14 @@ import 'package:job_mobile_app/controllers/history_provider.dart';
 import 'package:job_mobile_app/controllers/login_provider.dart';
 import 'package:job_mobile_app/controllers/on_boarding_providers.dart';
 import 'package:job_mobile_app/controllers/profile_provider.dart';
+import 'package:job_mobile_app/controllers/profile_updateProvider.dart';
 import 'package:job_mobile_app/controllers/zoom_provider.dart';
 import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/view/ui/History_Page.dart';
 import 'package:job_mobile_app/view/ui/Main_Screen.dart';
 import 'package:job_mobile_app/view/ui/Notification_Page.dart';
 import 'package:job_mobile_app/view/ui/Splash_Screen.dart';
-import 'package:job_mobile_app/view/ui/auth/profile.dart';
+import 'package:job_mobile_app/view/ui/Profile/profile.dart';
 import 'package:job_mobile_app/view/ui/bookmark/BookMarkPage.dart';
 import 'package:job_mobile_app/view/ui/chat/chat_screen.dart';
 import 'package:job_mobile_app/view/ui/device_manag/device_Managment_Page.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Device_Managment()),
         ChangeNotifierProvider(create: (_) => History_Notifier()),
         ChangeNotifierProvider(create: (_) => Notification_Notifier()),
+        ChangeNotifierProvider(create: (_) => changeprofileNotifier()),
       ],
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,

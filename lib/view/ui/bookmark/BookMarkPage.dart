@@ -35,13 +35,13 @@ class _BookMark_ScreenState extends State<BookMark_Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bookmarked Jobs',style: TextStyle(color: Colors.white),),
+        title: const Text('Bookmarked Jobs',style: TextStyle(color: Colors.white),),
         backgroundColor: Color(kmycolor.value),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          icon: const Icon(Icons.arrow_back,color: Colors.white,),
           onPressed: () {
-            Get.to(drawer_animated());
+            Get.to(const drawer_animated());
           },
         ),
       ),
@@ -49,11 +49,11 @@ class _BookMark_ScreenState extends State<BookMark_Screen> {
         future: BookmarkService.fetchBookmarkedJobs(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading bookmarked jobs'));
+            return const Center(child: Text('Error loading bookmarked jobs'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No bookmarked jobs'));
+            return const Center(child: Text('No bookmarked jobs'));
           } else {
             List<DocumentSnapshot> bookmarkedJobs = snapshot.data!;
             return ListView.builder(
@@ -124,7 +124,7 @@ class VerticalTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           height: 140,
           width: double.infinity,
           color: Color(klightGrey.value),
@@ -137,7 +137,7 @@ class VerticalTile extends StatelessWidget {
                     radius: 30,
                     backgroundImage: NetworkImage(imageUrl),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -179,7 +179,7 @@ class VerticalTile extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 18,
                             backgroundColor: Color(kLight.value),
-                            child: Icon(Icons.arrow_forward_ios_rounded),
+                            child: const Icon(Icons.arrow_forward_ios_rounded),
                           ),
                         ),
                       ),
@@ -187,7 +187,7 @@ class VerticalTile extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.only(left: 30),
                 child: Heading(
