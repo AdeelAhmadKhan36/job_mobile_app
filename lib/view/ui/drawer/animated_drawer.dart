@@ -17,7 +17,7 @@ class drawer_animated extends StatefulWidget {
 
 class _drawer_animatedState extends State<drawer_animated> {
   double value = 0;
-  late User currentUser;
+  User? currentUser;
   Map<String, dynamic>? userData;
 
   @override
@@ -26,9 +26,14 @@ class _drawer_animatedState extends State<drawer_animated> {
     getCurrentUser();
   }
 
-  void getCurrentUser() {
-    currentUser = FirebaseAuth.instance.currentUser!;
-    print('Current User UID: ${currentUser.uid}');
+  Future<void> getCurrentUser() async {
+    currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      print('Current User UID: ${currentUser!.uid}');
+      setState(() {});
+    } else {
+      print('User not logged in');
+    }
   }
 
   @override
@@ -57,36 +62,43 @@ class _drawer_animatedState extends State<drawer_animated> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // InfoCard Widget to display user information
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc(currentUser.uid)
-                          .collection('User_Profile')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        }
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        }
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Text('No data available');
-                        }
+                    if (currentUser != null)
+                      StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(currentUser!.uid)
+                            .collection('User_Profile')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
+                            return const Text('No data available');
+                          }
 
-                        final documents = snapshot.data!.docs;
-                        userData = documents.first.data()
-                        as Map<String, dynamic>;                 // Update userData here
-                        // print('Here is your data: $userData');
+                          final documents = snapshot.data!.docs;
+                          userData = documents.first.data()
+                          as Map<String, dynamic>; // Update userData here
+                          // print('Here is your data: $userData');
 
-                        return InfoCard(
-                          name: userData?['User Name'] ?? 'Default',
-                          profession:
-                              userData?['Your Expertise'] ?? 'Your Expertise',
-                        );
-                      },
-                    ),
+                          return InfoCard(
+                            name: userData?['User Name'] ?? 'Default',
+                            profession: userData?['Your Expertise'] ??
+                                'Your Expertise',
+                          );
+                        },
+                      )
+                    else
+                      InfoCard(
+                        name: 'Default Name',
+                        profession: 'Your Expertise',
+                      ),
 
                     Padding(
                       padding: const EdgeInsets.only(
@@ -131,11 +143,17 @@ class _drawer_animatedState extends State<drawer_animated> {
                           child: CircleAvatar(
                             radius: 25,
                             // Use a placeholder image from assets or a default image URL here
-                            backgroundImage: userData?['profileImageUrl'] != null
-                                ? NetworkImage(userData?['profileImageUrl']!)
-                                : const AssetImage('Assets/Images/profile.png') as ImageProvider, // Use default from assets if URL not available
+                            backgroundImage: currentUser != null
+                                ? (userData != null &&
+                                userData!['profileImageUrl'] != null
+                                ? NetworkImage(
+                              userData!['profileImageUrl']!,
+                            )
+                                : const AssetImage('Assets/Images/profile.png')
+                            as ImageProvider)
+                                : const AssetImage('Assets/Images/profile.png')
+                            as ImageProvider,
                           ),
-
                         ),
                       ],
                       child: Column(
@@ -146,7 +164,10 @@ class _drawer_animatedState extends State<drawer_animated> {
                                 value == 0 ? value = 1 : value = 0;
                               });
                             },
-                            child: const Icon(Icons.menu_rounded, weight: 50),
+                            child: const Icon(
+                              Icons.menu_rounded,
+                              weight: 50,
+                            ),
                           ),
                         ],
                       ),

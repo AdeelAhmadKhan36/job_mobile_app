@@ -15,6 +15,7 @@ import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 class Profile_Details extends StatefulWidget {
   const Profile_Details({super.key});
@@ -33,6 +34,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
   bool isImagePicked = false;
   bool _profileLoading = false;
   String? _profileImageUrl;
+  String? _filePath;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -45,6 +47,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
   TextEditingController skillFiveController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController expertiesController = TextEditingController();
+  TextEditingController useremailController=TextEditingController();
 
   @override
   void initState() {
@@ -102,6 +105,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
 
         Map<String, dynamic> profileData = {
           'User Name': nameController.text,
+          'User Email':useremailController.text,
           'Your Expertise': expertiesController.text,
           'User Location': locationController.text,
           'User Phone': phoneController.text,
@@ -182,12 +186,36 @@ class _Profile_DetailsState extends State<Profile_Details> {
         if (userDoc.exists) {
           String userName = userDoc['name'];
           nameController.text = userName;
+        }if(userDoc.exists){
+          String useremail=userDoc['email'];
+          useremailController.text = useremail;
+
         }
       }
     } catch (e) {
       print('Error fetching user profile data: $e');
     }
   }
+
+  //Pdf Picker Function
+
+  Future<void> _pickPdf() async {
+    try {
+      // Open file picker to choose PDF file
+      String? filePath = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      ).then((result) => result?.files.single.path);
+
+      setState(() {
+        _filePath = filePath;
+      });
+    } catch (e) {
+      print("Error picking PDF file: $e");
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -260,6 +288,37 @@ class _Profile_DetailsState extends State<Profile_Details> {
                             keyboardType: TextInputType.text,
                           ),
 
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                          TextFormField(
+                            controller: useremailController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: ' User Email',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Email cannot be empty";
+                              }
+                              if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
+                                  .hasMatch(value)) {
+                                return "Please enter a valid email";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                          ),
                           SizedBox(
                             height: 15,
                           ),
@@ -494,6 +553,39 @@ class _Profile_DetailsState extends State<Profile_Details> {
                             },
                             keyboardType: TextInputType.text,
                           ),
+
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            onTap: (){
+                              // _pickPdf();
+
+                            },
+                             // controller: TextEditingController(text: _filePath),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Choose CV',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+
+
+                              // suffixIcon: _filePath != null
+                              //     ? Icon(Icons.check, color: Colors.green) // Show check icon if PDF is selected
+                              //     : null, // Otherwise, show nothing
+                            ),
+
+                            keyboardType: TextInputType.text,
+
+                          ),
+
                         ],
                       ),
                     ),

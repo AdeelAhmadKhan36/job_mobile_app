@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:job_mobile_app/resources/constants/app_constant.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 
 class Profile_Page extends StatefulWidget {
   const Profile_Page({super.key});
@@ -38,7 +40,7 @@ class _Profile_PageState extends State<Profile_Page> {
                       icon: Icon(Icons.arrow_back),
                       onPressed: () {
                         // Handle back button press
-                        Navigator.pop(context);
+                       Get.to(drawer_animated());
                       },
                       color: Colors.white,
                     ),
@@ -62,7 +64,7 @@ class _Profile_PageState extends State<Profile_Page> {
                   backgroundImage: AssetImage("Assets/Images/profile.png"),
                 ),
                 SizedBox(
-                  width: 20,
+                  width: 18,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
