@@ -84,18 +84,20 @@ class _drawer_animatedState extends State<drawer_animated> {
 
                           final documents = snapshot.data!.docs;
                           userData = documents.first.data()
-                          as Map<String, dynamic>; // Update userData here
+                          as Map<String, dynamic>?; // Update userData here
                           // print('Here is your data: $userData');
 
+                          final name = userData?['User Name'] ?? 'Default';
+                          final profession = userData?['Your Expertise'] ?? 'Your Expertise';
+
                           return InfoCard(
-                            name: userData?['User Name'] ?? 'Default',
-                            profession: userData?['Your Expertise'] ??
-                                'Your Expertise',
+                            name: name,
+                            profession: profession,
                           );
                         },
                       )
                     else
-                      InfoCard(
+                      const InfoCard(
                         name: 'Default Name',
                         profession: 'Your Expertise',
                       ),
@@ -114,7 +116,7 @@ class _drawer_animatedState extends State<drawer_animated> {
                             .copyWith(color: Colors.white),
                       ),
                     ),
-                    SidemenuTile(),
+                     SidemenuTile(),
                   ],
                 ),
               ),
@@ -143,16 +145,15 @@ class _drawer_animatedState extends State<drawer_animated> {
                           child: CircleAvatar(
                             radius: 25,
                             // Use a placeholder image from assets or a default image URL here
-                            backgroundImage: currentUser != null
-                                ? (userData != null &&
-                                userData!['profileImageUrl'] != null
+                            backgroundImage: currentUser != null && userData != null
+                                ? (userData!['profileImageUrl'] != null
                                 ? NetworkImage(
                               userData!['profileImageUrl']!,
                             )
                                 : const AssetImage('Assets/Images/profile.png')
-                            as ImageProvider)
+                            as ImageProvider<Object>)
                                 : const AssetImage('Assets/Images/profile.png')
-                            as ImageProvider,
+                            as ImageProvider<Object>,
                           ),
                         ),
                       ],

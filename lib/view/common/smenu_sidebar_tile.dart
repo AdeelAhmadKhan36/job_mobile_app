@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:job_mobile_app/controllers/Home_Provider.dart';
 import 'package:job_mobile_app/controllers/Notification_provider.dart';
 import 'package:job_mobile_app/controllers/bokmark_provider.dart';
@@ -6,6 +9,7 @@ import 'package:job_mobile_app/controllers/chat_provider.dart';
 import 'package:job_mobile_app/controllers/device_managment.dart';
 import 'package:job_mobile_app/controllers/history_provider.dart';
 import 'package:job_mobile_app/controllers/profile_provider.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/ui/Profile/profile.dart';
@@ -55,10 +59,20 @@ class _SidemenuTileState extends State<SidemenuTile> {
     });
   }
 
+  void _logout() {
+    FirebaseAuth.instance.signOut();
+    // After signing out, navigate to the drawer_animated screen
+    Get.off(drawer_animated());
+  }
+
   Widget buildListTile(int index, IconData icon, String title) {
     return GestureDetector(
       onTap: () {
         _onTileTap(index);
+        if (index == 6) {
+          // Perform logout
+          _logout();
+        }
       },
       child: Container(
         child: Stack(
@@ -109,7 +123,8 @@ class _SidemenuTileState extends State<SidemenuTile> {
                           Navigator.of(context).pushReplacementNamed('/notifications');
                           break;
                         case 6:
-                          Navigator.of(context).pushReplacementNamed('/logout');
+                        // Navigator.of(context).pushReplacementNamed('/logout');
+                          _logout();
                           break;
                       }
                     },
@@ -140,4 +155,3 @@ class _SidemenuTileState extends State<SidemenuTile> {
     return Divider(height: 20, color: Colors.white24);
   }
 }
-

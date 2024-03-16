@@ -73,6 +73,8 @@ class MyApp extends StatelessWidget {
           '/profile': (context) => Profile_Page(),
           '/history': (context) => Hoistory_Screen(),
           '/notifications': (context) => Notification_screen(),
+          '/logout': (context) => drawer_animated(),
+
         },
       ),
     );

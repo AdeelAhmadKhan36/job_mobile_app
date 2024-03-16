@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
