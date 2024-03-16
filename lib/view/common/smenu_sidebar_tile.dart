@@ -9,6 +9,7 @@ import 'package:job_mobile_app/controllers/chat_provider.dart';
 import 'package:job_mobile_app/controllers/device_managment.dart';
 import 'package:job_mobile_app/controllers/history_provider.dart';
 import 'package:job_mobile_app/controllers/profile_provider.dart';
+import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
@@ -59,11 +60,19 @@ class _SidemenuTileState extends State<SidemenuTile> {
     });
   }
 
-  void _logout() {
-    FirebaseAuth.instance.signOut();
-    // After signing out, navigate to the drawer_animated screen
-    Get.off(drawer_animated());
+  void _logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Get.off(drawer_animated());
+
+      Utils().toastMessage('Logout Successful');
+
+    } catch (e) {
+      print('Error signing out: $e');
+      Utils().toastMessage('Error signing out');
+    }
   }
+
 
   Widget buildListTile(int index, IconData icon, String title) {
     return GestureDetector(
@@ -123,7 +132,7 @@ class _SidemenuTileState extends State<SidemenuTile> {
                           Navigator.of(context).pushReplacementNamed('/notifications');
                           break;
                         case 6:
-                        // Navigator.of(context).pushReplacementNamed('/logout');
+                         Navigator.of(context).pushReplacementNamed('/logout');
                           _logout();
                           break;
                       }

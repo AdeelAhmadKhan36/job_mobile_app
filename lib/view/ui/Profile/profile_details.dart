@@ -105,7 +105,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
 
         Map<String, dynamic> profileData = {
           'User Name': nameController.text,
-          'User Email':useremailController.text,
+          'User Email': useremailController.text,
           'Your Expertise': expertiesController.text,
           'User Location': locationController.text,
           'User Phone': phoneController.text,
@@ -115,6 +115,12 @@ class _Profile_DetailsState extends State<Profile_Details> {
           'Skill four': skillFourController.text,
           'Skill five': skillFiveController.text,
         };
+
+        // Upload PDF if selected
+        if (_filePath != null) {
+          String pdfUrl = await _uploadPdf();
+          profileData['User CV'] = pdfUrl;
+        }
 
         // Upload image if selected
         if (_selectedImage != null) {
@@ -143,6 +149,20 @@ class _Profile_DetailsState extends State<Profile_Details> {
       print('Error submitting user details: $e');
     }
   }
+
+  Future<String> _uploadPdf() async {
+    try {
+      Reference pdfRef = FirebaseStorage.instance.ref().child('User CV/${DateTime.now().millisecondsSinceEpoch}.pdf');
+      UploadTask uploadTask = pdfRef.putFile(File(_filePath!));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+      String pdfUrl = await taskSnapshot.ref.getDownloadURL();
+      return pdfUrl;
+    } catch (e) {
+      print('Error uploading PDF: $e');
+      throw e;
+    }
+  }
+
 
   Future<void> fetchUserProfileData() async {
     try {
@@ -216,6 +236,15 @@ class _Profile_DetailsState extends State<Profile_Details> {
   }
 
 
+  String _getFileName(String? filePath) {
+    if (filePath == null || filePath.isEmpty) {
+      return 'Choose CV Please';
+    }
+    // Split the file path using '/' and get the last part, which is the filename
+    List<String> pathSegments = filePath.split('/');
+    return pathSegments.last;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +263,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
                         Heading(
                           text: "Personal Details",
                           color: Color(kDark.value),
-                          fontSize: 35,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                         GestureDetector(
@@ -413,7 +442,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
                           child: Heading(
                             text: "Professional Details",
                             color: Color(kDark.value),
-                            fontSize: 35,
+                            fontSize: 30,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -559,10 +588,10 @@ class _Profile_DetailsState extends State<Profile_Details> {
                           ),
                           TextFormField(
                             onTap: (){
-                              // _pickPdf();
+                              _pickPdf();
 
                             },
-                             // controller: TextEditingController(text: _filePath),
+                            controller: TextEditingController(text: _getFileName(_filePath)),
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Color(kGrey.value),
@@ -577,9 +606,9 @@ class _Profile_DetailsState extends State<Profile_Details> {
                               ),
 
 
-                              // suffixIcon: _filePath != null
-                              //     ? Icon(Icons.check, color: Colors.green) // Show check icon if PDF is selected
-                              //     : null, // Otherwise, show nothing
+                              suffixIcon: _filePath != null
+                                  ? Icon(Icons.check, color: Colors.green) // Show check icon if PDF is selected
+                                  : null, // Otherwise, show nothing
                             ),
 
                             keyboardType: TextInputType.text,
