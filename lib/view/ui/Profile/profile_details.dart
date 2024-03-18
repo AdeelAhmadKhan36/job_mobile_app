@@ -94,6 +94,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
 
   Future<void> _submitDetails() async {
     try {
+      print('Submitting user details...');
       FirebaseAuth auth = FirebaseAuth.instance;
       User? user = auth.currentUser;
 
@@ -102,6 +103,10 @@ class _Profile_DetailsState extends State<Profile_Details> {
         CollectionReference usersCollection = firestore.collection('Users');
         DocumentReference userDocRef = usersCollection.doc(user.uid);
         CollectionReference userProfileCollection = userDocRef.collection('User_Profile');
+
+        setState(() {
+          isLoading = true; // Start showing circular progress indicator
+        });
 
         Map<String, dynamic> profileData = {
           'User Name': nameController.text,
@@ -117,49 +122,40 @@ class _Profile_DetailsState extends State<Profile_Details> {
         };
 
         // Upload PDF if selected
-        if (_filePath != null) {
+        if (_filePath != null && _filePath != 'CV Uploaded Already') {
+          print('Uploading PDF...');
           String pdfUrl = await _uploadPdf();
+          print('PDF uploaded: $pdfUrl');
           profileData['User CV'] = pdfUrl;
         }
 
         // Upload image if selected
         if (_selectedImage != null) {
+          print('Uploading image...');
           String imageUrl = await _uploadImage();
+          print('Image uploaded: $imageUrl');
           profileData['profileImageUrl'] = imageUrl;
         }
 
-        // Check if user already has a profile in the subcollection
-        QuerySnapshot existingProfile = await userProfileCollection.get();
-        if (existingProfile.docs.isNotEmpty) {
-          // Update existing profile data
-          await userProfileCollection.doc(existingProfile.docs.first.id).update(profileData);
-          print('User profile updated successfully');
-        } else {
-          // Add new profile data
-          await userProfileCollection.add(profileData);
-          print('New user profile added successfully');
-        }
+        // Update user profile data
+        await userProfileCollection.doc().set(profileData);
 
-        Utils().toastMessage("Profile details submitted successfully");
+        setState(() {
+          isLoading = false; // Stop showing circular progress indicator
+        });
+
+        // Show success message
+        Utils().toastMessage("Profile details updated successfully");
         Get.to(drawer_animated());
-      } else {
-        print('User not authenticated. Unable to submit details.');
+        print('User details updated successfully');
+
+
       }
     } catch (e) {
       print('Error submitting user details: $e');
-    }
-  }
-
-  Future<String> _uploadPdf() async {
-    try {
-      Reference pdfRef = FirebaseStorage.instance.ref().child('User CV/${DateTime.now().millisecondsSinceEpoch}.pdf');
-      UploadTask uploadTask = pdfRef.putFile(File(_filePath!));
-      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
-      String pdfUrl = await taskSnapshot.ref.getDownloadURL();
-      return pdfUrl;
-    } catch (e) {
-      print('Error uploading PDF: $e');
-      throw e;
+      setState(() {
+        isLoading = false; // Stop showing circular progress indicator
+      });
     }
   }
 
@@ -198,18 +194,26 @@ class _Profile_DetailsState extends State<Profile_Details> {
 
             // Set isImagePicked to true if _profileImageUrl is not null or empty
             isImagePicked = _profileImageUrl != null && _profileImageUrl!.isNotEmpty;
+
+            // Fetch CV and update _filePath if it exists
+            String? cvUrl = userData['User CV'];
+            if (cvUrl != null && cvUrl.isNotEmpty) {
+              // Update _filePath
+              setState(() {
+                _filePath = 'CV Uploaded Already';
+              });
+            }
           });
         }
 
-        // Retrieve user's name from the 'Users' collection
+        // Retrieve user's name and email from the 'Users' collection
         DocumentSnapshot userDoc = await userDocRef.get();
         if (userDoc.exists) {
           String userName = userDoc['name'];
           nameController.text = userName;
-        }if(userDoc.exists){
-          String useremail=userDoc['email'];
-          useremailController.text = useremail;
 
+          String useremail = userDoc['email'];
+          useremailController.text = useremail;
         }
       }
     } catch (e) {
@@ -217,32 +221,71 @@ class _Profile_DetailsState extends State<Profile_Details> {
     }
   }
 
-  //Pdf Picker Function
 
+  //Pdf Picker Function
   Future<void> _pickPdf() async {
     try {
       // Open file picker to choose PDF file
-      String? filePath = await FilePicker.platform.pickFiles(
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf'],
-      ).then((result) => result?.files.single.path);
+      );
 
-      setState(() {
-        _filePath = filePath;
-      });
+      if (result != null && result.files.isNotEmpty) {
+        setState(() {
+          _filePath = result.files.first.path;
+        });
+      } else {
+        print("No PDF file selected");
+      }
     } catch (e) {
       print("Error picking PDF file: $e");
     }
   }
 
+  Future<String> _uploadPdf() async {
+    try {
+      if (_filePath == null || _filePath!.isEmpty) {
+        print('Selected file path is null or empty. Cannot upload PDF.');
+        return '';
+      }
+
+      // If the CV is already uploaded, return the URL directly
+      if (_filePath == 'CV Uploaded Already') {
+        print('CV is already uploaded.');
+        // Here, you need to return the URL of the already uploaded CV.
+        // You can retrieve this URL from Firestore or wherever it is stored.
+        return 'URL_of_the_already_uploaded_CV';
+      }
+
+      File file = File(_filePath!);
+      if (!file.existsSync()) {
+        print('Selected file does not exist. Cannot upload PDF.');
+        return '';
+      }
+
+      Reference pdfRef = FirebaseStorage.instance.ref().child('User CV/${DateTime.now().millisecondsSinceEpoch}.pdf');
+      UploadTask uploadTask = pdfRef.putFile(file);
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+      String pdfUrl = await taskSnapshot.ref.getDownloadURL();
+      return pdfUrl;
+    } catch (e) {
+      print('Error uploading PDF: $e');
+      return '';
+    }
+  }
+
+
 
   String _getFileName(String? filePath) {
-    if (filePath == null || filePath.isEmpty) {
+    if (_filePath == null || _filePath!.isEmpty) {
       return 'Choose CV Please';
+    } else if (_filePath == 'CV Uploaded Already') {
+      return 'CV Uploaded Already';
+    } else {
+      List<String> pathSegments = _filePath!.split('/');
+      return pathSegments.last;
     }
-    // Split the file path using '/' and get the last part, which is the filename
-    List<String> pathSegments = filePath.split('/');
-    return pathSegments.last;
   }
 
 
@@ -607,7 +650,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
 
 
                               suffixIcon: _filePath != null
-                                  ? Icon(Icons.check, color: Colors.green) // Show check icon if PDF is selected
+                                  ? Icon(Icons.file_copy, color: Colors.green) // Show check icon if PDF is selected
                                   : null, // Otherwise, show nothing
                             ),
 
