@@ -1,7 +1,9 @@
+//Post Job Screen
 
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,7 +56,6 @@ class _JobPostScreenState extends State<JobPostScreen> {
 
 
   Future<void> postJob() async {
-
     // Validate the form before submitting
     if (_formkey.currentState!.validate()) {
       try {
@@ -75,50 +76,61 @@ class _JobPostScreenState extends State<JobPostScreen> {
         String imageUrl =
         await storageRef.child(imageName).getDownloadURL();
 
-        // Create a map containing job data
-        Map<String, dynamic> jobData = {
-          'companyName': companyNameController.text,
-          'imageUrl': imageUrl,
-          'jobTitle': jobtitleController.text,
-          'jobLocation': joblocationController.text,
-          'jobTiming': selectedJobTiming,
-          'salary': selectedSalary,
-          'jobDescription': descriptionController.text,
-          'jobRequirements': requirementController.text,
-          'timestamp': FieldValue.serverTimestamp(),
-          'popularity': 0, // Add this field
-          // Add more fields as needed
-        };
+        // Get the current user ID
+        String? userId = FirebaseAuth.instance.currentUser?.uid;
 
-        //Submit job data to Firestore
-        await _firestore.collection('Jobs').add(jobData);
+        // Check if the user ID is not null
+        if (userId != null) {
+          // Create a map containing job data along with the current user ID
+          Map<String, dynamic> jobData = {
+            'userId': userId,
+            'companyName': companyNameController.text,
+            'imageUrl': imageUrl,
+            'jobTitle': jobtitleController.text,
+            'jobLocation': joblocationController.text,
+            'jobTiming': selectedJobTiming,
+            'salary': selectedSalary,
+            'jobDescription': descriptionController.text,
+            'jobRequirements': requirementController.text,
+            'timestamp': FieldValue.serverTimestamp(),
+            'popularity': 0, // Add this field
+            // Add more fields as needed
+          };
 
+          //Submit job data to Firestore
+          DocumentReference jobRef =
+          await _firestore.collection('Jobs').add(jobData);
 
+          // Check if the job was successfully added to Firestore
+          if (jobRef.id.isNotEmpty) {
+            // Create a subcollection under Admins for the current user
+            CollectionReference myJobsRef = _firestore
+                .collection('Admins')
+                .doc(userId)
+                .collection('my_jobs');
 
-        // Clear the text field controllers
-        companyNameController.clear();
-        jobtitleController.clear();
+            // Store job details in the my_jobs subcollection
+            await myJobsRef.doc(jobRef.id).set(jobData);
 
-        descriptionController.clear();
-        requirementController.clear();
-        joblocationController.clear();
+            // Clear the text field controllers
+            companyNameController.clear();
+            jobtitleController.clear();
+            descriptionController.clear();
+            requirementController.clear();
+            joblocationController.clear();
 
+            // Clear the image selection
+            setState(() {
+              _image = null;
+            });
 
+            setState(() {
+              selectedSalary = null; // Set it to an empty string or null based on your logic
+            });
 
-        // Clear the image selection
-        setState(() {
-          _image = null;
-        });
-
-        setState(() {
-          selectedSalary = null; // Set it to an empty string or null based on your logic
-        });
-
-
-        Utils().toastMessage("Job submitted successfully");
-        setState(() {
-          loading=false;
-        });
+            Utils().toastMessage("Job submitted successfully");
+          }
+        }
       } catch (error) {
         Utils().toastMessage(error.toString());
         print("Error: $error");
@@ -170,7 +182,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
                   minimumSize: const Size(150, 50),
                 ),
                 child: Text(
-                      'Choose File',
+                  'Choose File',
                   style: TextStyle(color: Color(kLight.value)),
                 ),
               ),
@@ -327,3 +339,4 @@ class _JobPostScreenState extends State<JobPostScreen> {
     );
   }
 }
+

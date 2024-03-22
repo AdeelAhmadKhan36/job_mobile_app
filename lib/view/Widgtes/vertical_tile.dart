@@ -14,7 +14,7 @@ class VerticalTile extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('Jobs')
-          .orderBy('timestamp', descending: true) // Assuming you have a 'timestamp' field in your documents
+          .orderBy('timestamp', descending: true)
           .limit(1)
           .snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -37,8 +37,6 @@ class VerticalTile extends StatelessWidget {
         var companyName = mostRecentJob['companyName'];
         var jobTitle = mostRecentJob['jobTitle'];
         var imageUrl = mostRecentJob['imageUrl'];
-        var jobLocation = mostRecentJob['jobLocation'];
-        var jobTiming = mostRecentJob['jobTiming'];
         var salary = mostRecentJob['salary'];
 
         return GestureDetector(
@@ -60,53 +58,45 @@ class VerticalTile extends StatelessWidget {
                       backgroundImage: NetworkImage(imageUrl),
                     ),
                     SizedBox(width: 10),
-                    Expanded( // Wrap with Expanded to take up all available space
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Heading(
-                                  text: companyName,
-                                  color: Color(kDark.value),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Text(
-                                    jobTitle,
-                                    style: TextStyle(
-                                      color: Color(kDarkGrey.value),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 50,bottom: 18),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.to(() => Job_Page(
-                                    title: mostRecentJob['companyName'],
-                                    id: mostRecentJob.id,
-                                  ));
-                                },
-                                child: CircleAvatar(
-                                  radius: 18,
-                                  backgroundColor: Color(kLight.value),
-                                  child: Icon(Icons.arrow_forward_ios_rounded, color: Color(kOrange.value)),
-                                ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Heading(
+                            text: companyName,
+                            color: Color(kDark.value),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              jobTitle,
+                              style: TextStyle(
+                                color: Color(kDarkGrey.value),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
-                          ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 50, bottom: 18),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => Job_Page(
+                            title: mostRecentJob['companyName'],
+                            id: mostRecentJob.id,
+                          ));
+                        },
+                        child: CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Color(kLight.value),
+                          child: Icon(Icons.arrow_forward_ios_rounded, color: Color(kOrange.value)),
                         ),
                       ),
                     ),
@@ -118,7 +108,7 @@ class VerticalTile extends StatelessWidget {
                   child: Heading(
                     text: "${salary}/ Month",
                     color: Color(kDark.value),
-                    fontSize: 20,
+                    fontSize:16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/Jobs/Jobs_page.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
@@ -12,7 +10,6 @@ import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 class BookmarkService {
   static Future<List<DocumentSnapshot>> fetchBookmarkedJobs() async {
     try {
-      // Assuming 'bookmarks' is the collection where you store bookmarked jobs
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('bookmarks').get();
       List<DocumentSnapshot> bookmarkedJobDocuments = querySnapshot.docs;
       return bookmarkedJobDocuments;
@@ -35,11 +32,11 @@ class _BookMark_ScreenState extends State<BookMark_Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bookmarked Jobs',style: TextStyle(color: Colors.white),),
+        title: const Text('Bookmarked Jobs', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(kmycolor.value),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,color: Colors.white,),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Get.to(const drawer_animated());
           },
@@ -61,7 +58,6 @@ class _BookMark_ScreenState extends State<BookMark_Screen> {
               itemBuilder: (context, index) {
                 var jobData = bookmarkedJobs[index].data() as Map<String, dynamic>;
 
-                // Use null-aware operators to handle potential null values
                 String companyName = jobData['companyName'] ?? '';
                 String jobTitle = jobData['jobTitle'] ?? '';
                 String imageUrl = jobData['imageUrl'] ?? '';
@@ -75,19 +71,17 @@ class _BookMark_ScreenState extends State<BookMark_Screen> {
                   jobTitle: jobTitle,
                   imageUrl: imageUrl,
                   salary: salary,
-                  index: index, // Pass the index to VerticalTile
-                  bookmarkedJobs: bookmarkedJobs, // Pass the entire list of bookmarkedJobs
+                  index: index,
+                  bookmarkedJobs: bookmarkedJobs,
                 );
               },
             );
-
           }
         },
       ),
     );
   }
 }
-
 
 class VerticalTile extends StatelessWidget {
   const VerticalTile({
@@ -109,98 +103,124 @@ class VerticalTile extends StatelessWidget {
   final int index;
   final List<DocumentSnapshot> bookmarkedJobs;
 
+
   @override
   Widget build(BuildContext context) {
     var jobData = bookmarkedJobs[index].data() as Map<String, dynamic>;
+    var documentId = bookmarkedJobs[index].id;
 
-    // Use null-aware operators to handle potential null values
-    String companyName = jobData['companyName'] ?? '';
-    String jobTitle = jobData['jobTitle'] ?? '';
-    String imageUrl = jobData['imageUrl'] ?? '';
-    String salary = jobData['salary'] ?? '';
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(15),
+    return Dismissible(
+      key: Key(documentId),
+      direction: DismissDirection.horizontal,
+      background: Padding(
+        padding: const EdgeInsets.all(20),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          height: 140,
-          width: double.infinity,
-          color: Color(klightGrey.value),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(imageUrl),
-                  ),
-                  const SizedBox(width: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
+          color: Colors.red,
+          alignment: Alignment.centerRight,
+          child: const Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: Icon(Icons.delete, color: Colors.white),
+          ),
+        ),
+      ),
+
+      confirmDismiss: (direction) async {
+
+        return true;
+      },
+
+      onDismissed: (direction) async{
+        // Remove the item from the bookmarks list
+        Utils().toastMessage("Bookmarked has been removed Successfully");
+
+    await FirebaseFirestore.instance.collection('bookmarks').doc(documentId).delete();
+
+      },
+
+      child: GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            height: 140,
+            width: double.infinity,
+            color: Color(klightGrey.value),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(imageUrl),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Heading(
-                            text: companyName,
-                            color: Color(kDark.value),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Heading(
+                              text: companyName,
+                              color: Color(kDark.value),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           RichText(
-                            maxLines: 2, // Set the maximum number of lines
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             text: TextSpan(
                               style: TextStyle(
                                 color: Color(kDarkGrey.value),
-                                fontSize: 20,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                               children: [
                                 TextSpan(text: jobTitle.length > 17 ? jobTitle.substring(0, 17) + '...' : jobTitle),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 60, bottom: 25),
-                        child: GestureDetector(
-                          onTap: () {
-                            // Use the index to get the corresponding job
-                            Get.to(() => Job_Page(
-                              title: companyName,
-                              id: bookmarkedJobs[index].id,
-                            ));
-                          },
-                          child: CircleAvatar(
-                            radius: 18,
-                            backgroundColor: Color(kLight.value),
-                            child: const Icon(Icons.arrow_forward_ios_rounded),
-                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 60, bottom: 25),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(() => Job_Page(
+                            title: companyName,
+                            id: bookmarkedJobs[index].id,
+                          ));
+                        },
+                        child: CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Color(kLight.value),
+                          child: const Icon(Icons.arrow_forward_ios_rounded),
                         ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.only(left: 30),
-                child: Heading(
-                  text: "$salary/Monthly",
-                  color: Color(kDark.value),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30),
+                  child: Heading(
+                    text: "$salary/Monthly",
+                    color: Color(kDark.value),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+

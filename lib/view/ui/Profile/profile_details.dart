@@ -100,9 +100,7 @@ class _Profile_DetailsState extends State<Profile_Details> {
 
       if (user != null) {
         FirebaseFirestore firestore = FirebaseFirestore.instance;
-        CollectionReference usersCollection = firestore.collection('Users');
-        DocumentReference userDocRef = usersCollection.doc(user.uid);
-        CollectionReference userProfileCollection = userDocRef.collection('User_Profile');
+        DocumentReference userProfileRef = firestore.collection('Users').doc(user.uid).collection('User_Profile').doc(user.uid);
 
         setState(() {
           isLoading = true; // Start showing circular progress indicator
@@ -137,8 +135,19 @@ class _Profile_DetailsState extends State<Profile_Details> {
           profileData['profileImageUrl'] = imageUrl;
         }
 
-        // Update user profile data
-        await userProfileCollection.doc().set(profileData);
+        // Check if the user profile document already exists
+        bool userProfileExists = await userProfileRef.get().then((docSnapshot) => docSnapshot.exists);
+        print('User profile exists: $userProfileExists');
+
+        if (userProfileExists) {
+          // Update user profile data if document exists
+          await userProfileRef.update(profileData);
+          print('User profile updated successfully');
+        } else {
+          // Create new user profile document if it doesn't exist
+          await userProfileRef.set(profileData);
+          print('User profile created successfully');
+        }
 
         setState(() {
           isLoading = false; // Stop showing circular progress indicator
@@ -148,8 +157,6 @@ class _Profile_DetailsState extends State<Profile_Details> {
         Utils().toastMessage("Profile details updated successfully");
         Get.to(drawer_animated());
         print('User details updated successfully');
-
-
       }
     } catch (e) {
       print('Error submitting user details: $e');

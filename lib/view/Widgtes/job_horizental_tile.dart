@@ -17,7 +17,7 @@ class JobHorizontalTile extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('Jobs').snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
 
         var jobs = snapshot.data?.docs;
@@ -30,94 +30,95 @@ class JobHorizontalTile extends StatelessWidget {
 
             return Container(
               width: MediaQuery.of(context).size.width,
-              // Add more styling if needed
+              padding: const EdgeInsets.all(20),
               color: Colors.grey[200],
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(job['imageUrl']),
-                        ),
-                        SizedBox(width: 10),
-                        Text(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(job['imageUrl']),
+                      ),
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
                           job['companyName'],
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      job['jobTitle'],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          Text(
-                            job['jobLocation'],
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: 4,),
-                          Text(
-                            ' (${job['jobTiming']})',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 40,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                         " ${job['salary']}/Month",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                           ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Get.to(() => Job_Page(
-                              title: job['companyName'],
-                              id: job.id,
-                            ));
-                          },
-
-
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.white,
-                            child: Icon(Icons.arrow_forward_ios_rounded,color: Color(kOrange.value),weight: 20,),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Flexible(
+                    child: Text(
+                      job['jobTitle'],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${job['jobLocation']} (${job['jobTiming']})',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${job['salary']}/Month",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => Job_Page(
+                            title: job['companyName'],
+                            id: job.id,
+                          ));
+                        },
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Color(kOrange.value),
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             );
           },

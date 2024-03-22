@@ -30,7 +30,9 @@ class _drawer_animatedState extends State<drawer_animated> {
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       print('Current User UID: ${currentUser!.uid}');
-      setState(() {});
+      setState(() {
+        userData = {};
+      });
     } else {
       print('User not logged in');
     }
@@ -62,7 +64,7 @@ class _drawer_animatedState extends State<drawer_animated> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // InfoCard Widget to display user information
-                    if (currentUser != null)
+                    if (currentUser != null && userData != null) // Added null check for userData
                       StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('Users')
@@ -85,10 +87,10 @@ class _drawer_animatedState extends State<drawer_animated> {
                           final documents = snapshot.data!.docs;
                           userData = documents.first.data()
                           as Map<String, dynamic>?; // Update userData here
-                          // print('Here is your data: $userData');
 
                           final name = userData?['User Name'] ?? 'Default';
                           final profession = userData?['Your Expertise'] ?? 'Your Expertise';
+
 
                           return InfoCard(
                             name: name,
@@ -116,7 +118,7 @@ class _drawer_animatedState extends State<drawer_animated> {
                             .copyWith(color: Colors.white),
                       ),
                     ),
-                     SidemenuTile(),
+                    SidemenuTile(),
                   ],
                 ),
               ),

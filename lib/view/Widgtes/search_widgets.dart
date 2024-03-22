@@ -36,7 +36,7 @@ class SearchWidget extends StatelessWidget {
                       Text(
                         "Search for Job",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Color(kLight.value),
                           fontWeight: FontWeight.bold,
                         ),

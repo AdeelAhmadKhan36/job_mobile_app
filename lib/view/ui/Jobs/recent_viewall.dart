@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -12,7 +11,7 @@ class RecentViewAllScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'View All Recent Jobs',
+          'All Recent Jobs',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -40,39 +39,34 @@ class RecentViewAllScreen extends StatelessWidget {
 
           return Padding(
             padding: const EdgeInsets.all(20),
-            child: ListView.builder(
-              itemCount: jobs.length,
-              itemBuilder: (context, index) {
-                var job = jobs[index];
-                var jobData = job.data() as Map<String, dynamic>;
+            child: SingleChildScrollView(
+              child: Column(
+                children: jobs.map((job) {
+                  var jobData = job.data() as Map<String, dynamic>;
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    height: 140,
-                    width: double.infinity,
-                    color: Color(klightGrey.value),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundImage: NetworkImage(jobData['imageUrl']),
-                            ),
-                            SizedBox(width: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      color: Color(klightGrey.value),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundImage: NetworkImage(jobData['imageUrl']),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Heading(
                                       text: jobData['companyName'],
                                       color: Color(kDark.value),
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                     ),
                                     SingleChildScrollView(
@@ -81,52 +75,52 @@ class RecentViewAllScreen extends StatelessWidget {
                                         jobData['jobTitle'],
                                         style: TextStyle(
                                           color: Color(kDarkGrey.value),
-                                          fontSize: 20,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
-
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50,bottom: 16),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Get.to(() => Job_Page(
-                                        title: jobData['companyName'],
-                                        id: job.id,
-                                      ));
-                                    },
-                                    child: CircleAvatar(
-                                      radius: 18,
-                                      backgroundColor: Color(kLight.value),
-                                      child: Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: Color(kmycolor.value),
-                                      ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20, bottom: 16),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => Job_Page(
+                                      title: jobData['companyName'],
+                                      id: job.id,
+                                    ));
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: Color(kLight.value),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: Color(kmycolor.value),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30),
-                          child: Heading(
-                            text: "${jobData['salary']}/ Month",
-                            color: Color(kDark.value),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30),
+                            child: Heading(
+                              text: "${jobData['salary']}/ Month",
+                              color: Color(kDark.value),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                }).toList(),
+              ),
             ),
           );
         },

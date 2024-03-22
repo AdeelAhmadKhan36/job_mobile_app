@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
@@ -46,7 +47,7 @@ class _Job_PageState extends State<Job_Page> {
 
   Future<void> toggleBookmark() async {
     CollectionReference bookmarksCollection =
-        FirebaseFirestore.instance.collection('bookmarks');
+    FirebaseFirestore.instance.collection('bookmarks');
 
     try {
       DocumentSnapshot bookmarkDoc = await FirebaseFirestore.instance
@@ -160,7 +161,7 @@ class _Job_PageState extends State<Job_Page> {
                           child: CircleAvatar(
                             radius: 25,
                             backgroundImage:
-                                NetworkImage(jobData!['imageUrl'] ?? ''),
+                            NetworkImage(jobData!['imageUrl'] ?? ''),
                           ),
                         ),
                         SizedBox(
@@ -169,7 +170,7 @@ class _Job_PageState extends State<Job_Page> {
                         Heading(
                           text: jobData!['jobTitle'] ?? '',
                           color: Color(kDark.value),
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.w600,
                         ),
                         Text(
@@ -198,7 +199,7 @@ class _Job_PageState extends State<Job_Page> {
                               Heading(
                                 text: "${jobData!['salary'] ?? ''}/Month",
                                 color: Color(kDark.value),
-                                fontSize: 20,
+                                fontSize:16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ],
@@ -213,7 +214,7 @@ class _Job_PageState extends State<Job_Page> {
                   Heading(
                     text: "Job Description",
                     color: Color(kDark.value),
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                   SizedBox(height: 10),
@@ -231,20 +232,20 @@ class _Job_PageState extends State<Job_Page> {
                   Heading(
                     text: "Requirements",
                     color: Color(kDark.value),
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                   SizedBox(height: 10),
                   BulletPointsList(
                     points: (jobData!['jobRequirements'] is String)
                         ? (jobData!['jobRequirements'] as String)
-                            .split('\n')
-                            .map((line) => line.trim())
-                            .toList()
+                        .split('\n')
+                        .map((line) => line.trim())
+                        .toList()
                         : (jobData!['jobRequirements'] as List<dynamic>? ?? [])
-                            .map((dynamic item) => item.toString())
-                            .whereType<String>()
-                            .toList(),
+                        .map((dynamic item) => item.toString())
+                        .whereType<String>()
+                        .toList(),
                   ),
                 ],
               ),
@@ -268,7 +269,7 @@ class _Job_PageState extends State<Job_Page> {
                 "Apply Now",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -8,12 +8,18 @@ class ViewAllScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('View All Popular Jobs',style: TextStyle(color: Colors.white),),
+        title: Text(
+          'All Popular Jobs',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Color(kmycolor.value),
         centerTitle: true,
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('Jobs').orderBy('popularity', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('Jobs')
+            .orderBy('popularity', descending: true)
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -31,85 +37,83 @@ class ViewAllScreen extends StatelessWidget {
 
           return Padding(
             padding: const EdgeInsets.all(20),
-            child: ListView.builder(
-              itemCount: popularJobs.length,
-              itemBuilder: (context, index) {
-                var job = popularJobs[index].data() as Map<String, dynamic>;
-                var jobId = popularJobs[index].id; // Get the document ID
+            child: SingleChildScrollView(
+              child: Column(
+                children: popularJobs.map((doc) {
+                  var job = doc.data() as Map<String, dynamic>;
+                  var jobId = doc.id; // Get the document ID
 
-                int currentPopularity = job['popularity'];
-                FirebaseFirestore.instance.collection('Jobs').doc(jobId).update({
-                  'popularity': currentPopularity + 1,
-                });
+                  int currentPopularity = job['popularity'];
+                  FirebaseFirestore.instance.collection('Jobs').doc(jobId).update({
+                    'popularity': currentPopularity + 1,
+                  });
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    height: 140,
-                    width: double.infinity,
-                    color: Color(klightGrey.value),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundImage: NetworkImage(job['imageUrl']),
-                            ),
-                            SizedBox(width: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      color: Color(klightGrey.value),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundImage: NetworkImage(job['imageUrl']),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Heading(
                                       text: job['companyName'],
                                       color: Color(kDark.value),
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                     ),
                                     Text(
                                       job['jobTitle'],
                                       style: TextStyle(
                                         color: Color(kDarkGrey.value),
-                                        fontSize: 20,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50,bottom: 16),
-                                  child: CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor: Color(kLight.value),
-                                    child: Icon(Icons.arrow_forward_ios_rounded,
-                                      color: Color(kmycolor.value),
-                                    ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20, bottom: 16),
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: Color(kLight.value),
+                                  child: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: Color(kmycolor.value),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 30),
-                          child: Heading(
-                            text: "${job['salary']}/ Month",
-                            color: Color(kDark.value),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30),
+                            child: Heading(
+                              text: "${job['salary']}/ Month",
+                              color: Color(kDark.value),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                }).toList(),
+              ),
             ),
           );
         },
