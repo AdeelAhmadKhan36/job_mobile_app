@@ -12,67 +12,12 @@ class EmployerDashboard extends StatelessWidget {
     return Scaffold(
         body: Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(kDarkBlue.value),
-                      minimumSize: const Size(180, 50),
-                      elevation: 10, // Elevation (shadow depth)
-                      shadowColor: Colors.blue,
-                    ),
-                    child: const Text(
-                      'Dashboard',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(kDarkBlue.value),
-                      minimumSize: const Size(180, 50),
-                      elevation: 10, // Elevation (shadow depth)
-                      shadowColor: Colors.blue,
-                    ),
-                     child: const Text(
-                      'Dashboard',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Heading(
-                  text: 'My Dashboard',
-                  color: Color(kDark.value),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
               color: Color(kDarkBlue.value),
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(50), topRight: Radius.circular(50)),
+              // borderRadius: const BorderRadius.only(
+              //     topLeft: Radius.circular(50), topRight: Radius.circular(50)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -180,29 +125,33 @@ class EmployerDashboard extends StatelessWidget {
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 8,bottom: 8),
-                                    child: Column(
-                                      children: [
-                                        Heading(
-                                            text: '100+',
-                                            color: Color(kLight.value),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Heading(
-                                            text: 'Application',
-                                            color: Color(kLight.value),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ],
+                                    child: GestureDetector(
+
+
+                                      child: Column(
+                                        children: [
+                                          Heading(
+                                              text: '100+',
+                                              color: Color(kLight.value),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Heading(
+                                              text: 'Application',
+                                              color: Color(kLight.value),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 )
                               ],
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 80,
                             ),
                             GestureDetector(
                               onTap: (){

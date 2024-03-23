@@ -38,7 +38,7 @@ class _admin_main_pageState extends State<admin_main_page> {
           // Drawer
           SafeArea(
             child: Container(
-              width:230,
+              width: 230,
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
                 child: Column(
@@ -79,54 +79,47 @@ class _admin_main_pageState extends State<admin_main_page> {
                 alignment: Alignment.center,
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, 0.001)
-                  ..setEntry(0, 3,210 * val)
+                  ..setEntry(0, 3, 210 * val)
                   ..rotateY((pi / 6) * val),
                 child: Scaffold(
-                  appBar: PreferredSize(preferredSize:Size.fromHeight(50),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2,left: 2,right: 2),
-                        child: Custom_AppBar(
-
-                          title: Heading(
-                              text: "Job Portal",
-                              color: Color(kDark.value),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-
-                          actions: [
-                            IconButton(
-                              icon: const Icon(Icons.notifications_active, size: 30),
-                              onPressed: () {
-                                // Handle search icon press
-                              },
-                            ),
-
-                          ],
-                          child: Column(
-                            children: [
-                              MaterialButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      value== 0 ? value = 1 : value = 0;
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Icon(Icons.menu_rounded,weight:50,size: 30,),
-                                  )
-                              )
-                            ],
-                          ),
-
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(50),
+                    child: Container(
+                      color: Color(kDarkBlue.value),
+                      child: Custom_AppBar(
+                        title: Heading(
+                          text: "My Dashbaord",
+                          color: Color(kLight.value),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                      )),
-
-
-                  body: Center(
-                      child: EmployerDashboard()
-
-                    // Home_Screen()
+                        actions: [
+                          IconButton(
+                            icon: const Icon(Icons.notifications_active, size: 30,color: Colors.white,),
+                            onPressed: () {
+                              // Handle search icon press
+                            },
+                          ),
+                        ],
+                        child: Column(
+                          children: [
+                            MaterialButton(
+                              onPressed: () {
+                                setState(() {
+                                  value == 0 ? value = 1 : value = 0;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Icon(Icons.menu_rounded, weight: 50, size: 30,color: Colors.white,),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
+                  body: EmployerDashboard(), // No extra spacing between the app bar and body
                 ),
               );
             },

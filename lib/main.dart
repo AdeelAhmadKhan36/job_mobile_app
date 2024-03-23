@@ -73,7 +73,10 @@ class MyApp extends StatelessWidget {
               '/chat': (context) => Chat_Screen(),
               '/bookmarks': (context) => BookMark_Screen(),
               '/device_management': (context) => device_Managment_Page(),
-              '/profile': (context) => Profile_Page(),
+              '/profile': (context) => Profile_Page(job: {
+
+
+              },),
               '/history': (context) => Hoistory_Screen(),
               '/notifications': (context) => Notification_screen(),
               '/logout': (context) => drawer_animated(),
