@@ -83,7 +83,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
         if (userId != null) {
           // Create a map containing job data along with the current user ID
           Map<String, dynamic> jobData = {
-            'userId': userId,
+            'adminUID': FirebaseAuth.instance.currentUser!.uid, // Store the admin's UID
             'companyName': companyNameController.text,
             'imageUrl': imageUrl,
             'jobTitle': jobtitleController.text,
