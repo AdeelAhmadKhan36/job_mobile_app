@@ -197,6 +197,7 @@ class EmployerDashboard extends StatelessWidget {
           ),
         )
       ],
-    ));
+    )
+    );
   }
 }
