@@ -281,9 +281,13 @@ class _Job_PageState extends State<Job_Page> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Profile_Page(
-                    job: {'adminUID': adminUID},
+                    job: {'adminUID': adminUID,'JobId':jobData},
+                      // job: jobData!,
+                      jobID: widget.id,
+
                   ),
                 ),
+
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

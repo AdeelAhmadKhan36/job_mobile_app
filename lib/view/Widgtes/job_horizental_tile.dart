@@ -87,7 +87,7 @@ class JobHorizontalTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 50),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

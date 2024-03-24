@@ -12,9 +12,11 @@ import 'package:job_mobile_app/view/ui/Jobs/Jobs_page.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
 class Profile_Page extends StatefulWidget {
-  final Map<String, dynamic> job; // Define a variable to hold the job details
+  final Map<String, dynamic> job;
+  // Define a variable to hold the job details
+  final String jobID;
 
-  const Profile_Page({Key? key, required this.job}) : super(key: key);
+  const Profile_Page({Key? key, required this.job, required this.jobID, }) : super(key: key);
 
   @override
   State<Profile_Page> createState() => _Profile_PageState();
@@ -430,7 +432,9 @@ class _Profile_PageState extends State<Profile_Page> {
             .collection('Job_Applications')
             .add({
           'applicantUID': currentUserUID,
-
+          'jobID': widget.jobID, // Add the jobID to the application
+          // Add the jobID to the application
+          'status': 'submitted', // Set initial status to 'submitted'
         }).then((value) {
           Navigator.of(context).pop();
           Get.to(drawer_animated());
@@ -455,5 +459,6 @@ class _Profile_PageState extends State<Profile_Page> {
       });
     });
   }
+
 }
 
