@@ -25,7 +25,7 @@ class Page_One extends StatelessWidget {
         // Reuseable_Text(text: 'Find Your Dream Job', style:app_style(40,Color(kLight.value),
         //fw),)
         Padding(
-          padding: const EdgeInsets.only(top: 650),
+          padding: const EdgeInsets.only(top: 550),
           child: Column(
             children: [
               Center(

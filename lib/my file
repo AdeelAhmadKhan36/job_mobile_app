@@ -70,3 +70,2912 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
+
+///Job Horizentak tile
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:job_mobile_app/view/ui/Jobs/Jobs_page.dart';
+
+class JobHorizontalTile extends StatelessWidget {
+  const JobHorizontalTile({
+    Key? key,
+    required Null Function() onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('Jobs').snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+
+        var jobs = snapshot.data?.docs;
+
+        return Container(
+          height: 200,
+          width: double.infinity,
+          color: Colors.grey[200],
+          child: PageView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: jobs!.length,
+            itemBuilder: (context, index) {
+              var job = jobs[index];
+
+              return GestureDetector(
+                onTap: () {
+                  Get.to(() => Job_Page(
+                    title: job['companyName'],
+                    id: job.id,
+                  ));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(job['imageUrl']),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            job['companyName'],
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 30),
+                      Text(
+                        job['jobTitle'],
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Text(
+                              job['jobLocation'],
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 4,),
+                            Text(
+                              ' (${job['jobTiming']})',
+
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 40,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            job['salary'],
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.blue,
+                            child: Icon(Icons.arrow_forward_ios_rounded),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+//Vertical Tile
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+class vertical_tile extends StatelessWidget {
+  const vertical_tile({super.key, this.onTap});
+
+
+  final void Function()? onTap;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10,),
+        height: 140,
+        width: double.infinity,
+        color: Color(klightGrey.value),
+        child:Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: AssetImage("Assets/Images/codematics.jpg"),
+
+                ),
+                SizedBox(width:10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Heading(text: "Codematics", color: Color(kDark.value), fontSize: 20, fontWeight: FontWeight.w600),
+                        Text("Game Developer",style: TextStyle(color: Color(kDarkGrey.value),fontSize:20,fontWeight: FontWeight.bold),),
+
+                      ],
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 70,),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Color(kLight.value),
+                        child: Icon(Icons.arrow_forward_ios_rounded),
+                      ),
+                    )
+
+                  ],
+                )
+              ],
+            ),
+            SizedBox(height:20,),
+            Padding(
+              padding: const EdgeInsets.only(left: 30),
+              child: Heading(text: "60K/Monthly",  color: Color(kDark.value), fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+
+
+          ],
+        ),
+      ),
+    );
+  }
+}
+//Vertical Tile 02
+
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+
+class VerticalTile extends StatelessWidget {
+  const VerticalTile({Key? key, required Null Function() onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('Jobs').snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        // Get the most recent job from the snapshot
+        var jobs = snapshot.data?.docs;
+        var mostRecentJob = jobs?.isNotEmpty ?? false ? jobs![0] : null;
+
+        if (mostRecentJob == null) {
+          return Center(child: Text('No jobs available.'));
+        }
+
+        // Extract job details
+        var companyName = mostRecentJob['companyName'];
+        var jobTitle = mostRecentJob['jobTitle'];
+        var imageUrl = mostRecentJob['imageUrl'];
+        var jobLocation = mostRecentJob['jobLocation'];
+        var jobTiming = mostRecentJob['jobTiming'];
+        var salary = mostRecentJob['salary'];
+
+        return GestureDetector(
+          onTap: () {
+            // Handle onTap event
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            height: 140,
+            width: double.infinity,
+            color: Color(klightGrey.value),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(imageUrl),
+                    ),
+                    SizedBox(width: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Heading(
+                              text: companyName,
+                              color: Color(kDark.value),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            Text(
+                              jobTitle,
+                              style: TextStyle(
+                                color: Color(kDarkGrey.value),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 23),
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundColor: Color(kLight.value),
+                            child: Icon(Icons.arrow_forward_ios_rounded),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30),
+                  child: Heading(
+                    text: "${salary}/ Month",
+                    color: Color(kDark.value),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+//searchpage
+
+
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+
+class Search_Page extends StatefulWidget {
+  const Search_Page({Key? key}) : super(key: key);
+
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<Search_Page> {
+  TextEditingController searchController = TextEditingController();
+  List<DocumentSnapshot> searchResults = [];
+  bool isLoading = false;
+
+  Future<void> searchJobs() async {
+    String searchTerm = searchController.text.trim();
+
+    try {
+      if (searchTerm.isNotEmpty) {
+        setState(() {
+          isLoading = true;
+        });
+
+        // Convert to title case if the search term is in lowercase
+        if (searchTerm == searchTerm.toLowerCase()) {
+          searchTerm = toTitleCase(searchTerm);
+        }
+
+        var titleResults = await FirebaseFirestore.instance
+            .collection('Jobs')
+            .where('jobTitle', isGreaterThanOrEqualTo: searchTerm)
+            .where('jobTitle', isLessThan: searchTerm + 'z')
+            .get();
+
+        var locationResults = await FirebaseFirestore.instance
+            .collection('Jobs')
+            .where('jobLocation', isGreaterThanOrEqualTo: searchTerm)
+            .where('jobLocation', isLessThan: searchTerm + 'z')
+            .get();
+
+        setState(() {
+          searchResults = [...titleResults.docs, ...locationResults.docs];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          searchResults = [];
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error searching jobs: $e');
+      setState(() {
+        searchResults = [];
+        isLoading = false;
+      });
+    }
+  }
+
+  // Function to convert a string to title case
+  String toTitleCase(String text) {
+    return text.replaceAllMapped(
+        RegExp(r'\b\w'),
+            (match) => match.group(0)!.toUpperCase() +
+            match.group(0)!.substring(1).toLowerCase());
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(kprimary_colors.value),
+        iconTheme: IconThemeData(color: Color(kLight.value)),
+        title: TextField(
+          controller: searchController,
+          cursorColor: Colors.white,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: 'Search for a job',
+            hintStyle: TextStyle(color: Colors.white),
+            suffixIcon: GestureDetector(
+              onTap: () async {
+                await searchJobs();
+              },
+              child: Icon(Icons.search_sharp, color: Colors.white),
+            ),
+          ),
+        ),
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Column(
+            children: [
+              if (isLoading)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(150),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              if (!isLoading && searchResults.isNotEmpty)
+                Column(
+                  children: searchResults.map((job) {
+                    var jobData = job.data() as Map<String, dynamic>;
+                    return vertical_tile(
+                      onTap: () {
+                        // Handle tap on a search result
+                      },
+                      companyName: jobData['companyName'],
+                      jobTitle: jobData['jobTitle'],
+                      imageUrl: jobData['imageUrl'],
+                      salary: jobData['salary'],
+                    );
+                  }).toList(),
+                ),
+              if (!isLoading && searchResults.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 200),
+                  child: Column(
+                    children: [
+                      Image.asset("Assets/Images/search-preview.png"),
+                      Heading(
+                        text: "Start Searching For Jobs",
+                        color: Color(kDark.value),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class vertical_tile extends StatelessWidget {
+  const vertical_tile({
+    Key? key,
+    this.onTap,
+    required this.companyName,
+    required this.jobTitle,
+    required this.imageUrl,
+    required this.salary,
+  }) : super(key: key);
+
+  final void Function()? onTap;
+  final String companyName;
+  final String jobTitle;
+  final String imageUrl;
+  final String salary;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 20,left: 20,right: 20),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          height: 140,
+          width: double.infinity,
+          color: Color(klightGrey.value),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(imageUrl),
+                  ),
+                  SizedBox(width: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Heading(
+                            text: companyName,
+                            color: Color(kDark.value),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          Text(
+                            jobTitle,
+                            style: TextStyle(
+                              color: Color(kDarkGrey.value),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 50),
+                        child: GestureDetector(
+                          child: CircleAvatar(
+                            radius: 18,
+                            backgroundColor: Color(kLight.value),
+                            child: Icon(Icons.arrow_forward_ios_rounded),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Heading(
+                  text: "${salary}/ Monthly",
+                  color: Color(kDark.value),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+//Job page
+
+
+
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/Widgtes/requirements.dart';
+import 'package:job_mobile_app/view/common/app_bar.dart';
+import 'package:job_mobile_app/view/common/custom_outline_button.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/auth/profile.dart';
+
+class Job_Page extends StatefulWidget {
+  const Job_Page({Key? key, required this.id, required this.title}) : super(key: key);
+
+  final String id;
+  final String title;
+
+  @override
+  State<Job_Page> createState() => _Job_PageState();
+}
+
+class _Job_PageState extends State<Job_Page> {
+  bool isBookmarked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Custom_AppBar(
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Icon(Icons.arrow_back),
+            ),
+            title: Text(
+              'Job Details',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(kDark.value),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 12, bottom: 20),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isBookmarked = !isBookmarked;
+                    });
+                    // Add logic to save or remove the bookmarked job ID
+                  },
+                  icon: Icon(
+                    isBookmarked
+                        ? Icons.bookmark
+                        : Icons.bookmark_outline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('Jobs')
+            .doc(widget.id)
+            .snapshots(),
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(child: Text('Error loading job details'));
+          }
+
+          var job = snapshot.data!.data() as Map<String, dynamic>?;
+
+          if (job == null) {
+            return Center(child: Text('Job details not found'));
+          }
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    color: Color(klightGrey.value),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: CircleAvatar(
+                            radius: 25,
+                            backgroundImage:
+                            NetworkImage(job['imageUrl'] ?? ''),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Heading(
+                            text: job['jobTitle'] ?? '',
+                            color: Color(kDark.value),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600),
+                        Text(
+                          job['jobLocation'] ?? '',
+                          style: TextStyle(
+                              color: Color(kDarkGrey.value),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 52, right: 52),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Custom_Button(
+                                height: 30,
+                                width: 85,
+                                color2: Color(kLight.value),
+                                text: job['jobTiming'] ?? '',
+                                color: Color(kOrange.value),
+                              ),
+                              Heading(
+                                  text: "${job['salary'] ?? ''}/Month",
+                                  color: Color(kDark.value),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Heading(
+                      text: "Job Description",
+                      color: Color(kDark.value),
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                  SizedBox(height: 10),
+                  Text(
+                    job['jobDescription'] ?? '',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(kDarkGrey.value),
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Heading(
+                      text: "Requirements",
+                      color: Color(kDark.value),
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                  SizedBox(height: 10),
+                  BulletPointsList(
+                    points: (job['jobRequirements'] is String)
+                        ? (job['jobRequirements'] as String)
+                        .split('\n')
+                        .map((line) => line.trim())
+                        .toList()
+                        : (job['jobRequirements'] as List<dynamic>? ?? [])
+                        .map((dynamic item) => item.toString())
+                        .whereType<String>()
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Profile_Page()));
+          },
+          child: Container(
+            height: 50,
+            width: double.infinity,
+            color: Color(kOrange.value),
+            child: Center(
+              child: Text(
+                "Apply Now",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+//profile page
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:job_mobile_app/controllers/profile_updateProvider.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/utils/Round_button.dart';
+import 'package:job_mobile_app/utils/utils.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
+import 'package:provider/provider.dart';
+
+class Profile_Details extends StatefulWidget {
+  const Profile_Details({super.key});
+
+  @override
+  State<Profile_Details> createState() => _Profile_DetailsState();
+}
+
+class _Profile_DetailsState extends State<Profile_Details> {
+  File? _image;
+  final picker = ImagePicker();
+  final _Formkey = GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
+  File? _selectedImage;
+  bool isLoading = false;
+  bool isImagePicked = false;
+  bool _profileLoading = false;
+  String? _profileImageUrl;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  TextEditingController locationController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController skillOneController = TextEditingController();
+  TextEditingController skillTwoController = TextEditingController();
+  TextEditingController skillThreeController = TextEditingController();
+  TextEditingController skillFourController = TextEditingController();
+  TextEditingController skillFiveController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController professionalController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfileData();
+  }
+
+  Future<void> getImage() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+        isImagePicked = true;
+      });
+
+      debugPrint("Image Picked Successfully");
+    } else {
+      print("No Image has been picked");
+    }
+  }
+
+  Future<String> _uploadImage() async {
+    try {
+      if (_selectedImage == null || !_selectedImage!.existsSync()) {
+        print('Selected image is null or does not exist. Cannot upload.');
+        return '';
+      }
+
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference storageReference =
+      storage.ref().child('profile_images/${DateTime.now()}.jpg');
+      await storageReference.putFile(_selectedImage!);
+      String imageUrl = await storageReference.getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return '';
+    }
+  }
+
+  Future<void> _submitDetails() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User? user = auth.currentUser;
+
+      if (user != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference usersCollection =
+        firestore.collection('Users_Profiles');
+
+        QuerySnapshot existingData = await usersCollection
+            .where('User ID', isEqualTo: user.uid)
+            .get();
+
+        if (existingData.docs.isNotEmpty) {
+          Map<String, dynamic> updateData = {
+            'User Location': locationController.text,
+            'User Phone': phoneController.text,
+            'Skill one': skillOneController.text,
+            'Skill two': skillTwoController.text,
+            'Skill three': skillThreeController.text,
+            'Skill four': skillFourController.text,
+            'Skill five': skillFiveController.text,
+          };
+
+          if (_selectedImage != null) {
+            String imageUrl = await _uploadImage();
+            updateData['profileImageUrl'] = imageUrl;
+            _profileImageUrl = imageUrl;
+          } else if (_profileImageUrl != null && _profileImageUrl!.isNotEmpty) {
+            updateData['profileImageUrl'] = _profileImageUrl;
+          }
+
+          await usersCollection
+              .doc(existingData.docs.first.id)
+              .update(updateData);
+
+          Utils().toastMessage("Profile details updated successfully");
+          Get.to(drawer_animated());
+          print('User details updated successfully');
+        } else {
+          String imageUrl = await _uploadImage();
+          _profileImageUrl = imageUrl;
+          await usersCollection.add({
+            'User ID': user.uid,
+            'User Location': locationController.text,
+            'User Phone': phoneController.text,
+            'profileImageUrl': imageUrl,
+            'Skill one': skillOneController.text,
+            'Skill two': skillTwoController.text,
+            'Skill three': skillThreeController.text,
+            'Skill four': skillFourController.text,
+            'Skill five': skillFiveController.text,
+          } as Map<String, dynamic>);
+
+          Utils().toastMessage("Profile details submitted successfully");
+          Get.to(drawer_animated());
+          print('User details submitted successfully');
+        }
+      } else {
+        print('User not authenticated. Unable to submit details.');
+      }
+    } catch (e) {
+      print('Error submitting user details: $e');
+    }
+  }
+
+  Future<void> fetchUserProfileData() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User? user = auth.currentUser;
+
+      if (user != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference usersCollection =
+        firestore.collection('Users_Profiles');
+
+        QuerySnapshot userData = await usersCollection
+            .where('User ID', isEqualTo: user.uid)
+            .get();
+
+        if (userData.docs.isNotEmpty) {
+          Map<String, dynamic> userMap =
+          userData.docs.first.data() as Map<String, dynamic>;
+          setState(() {
+            locationController.text = userMap['User Location'] ?? '';
+            phoneController.text = userMap['User Phone'] ?? '';
+            skillOneController.text = userMap['Skill one'] ?? '';
+            skillTwoController.text = userMap['Skill two'] ?? '';
+            skillThreeController.text = userMap['Skill three'] ?? '';
+            skillFourController.text = userMap['Skill four'] ?? '';
+            skillFiveController.text = userMap['Skill five'] ?? '';
+
+            if (userMap.containsKey('profileImageUrl')) {
+              _profileImageUrl = userMap['profileImageUrl'];
+              isImagePicked = true;
+            }
+          });
+        }
+      }
+    } catch (e) {
+      print('Error fetching user profile data: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<changeprofileNotifier>(
+      builder: (context, changeprofileNotifier, child) {
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Heading(
+                          text: "Personal Details",
+                          color: Color(kDark.value),
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            getImage();
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: Color(kmycolor.value),
+                            child: isImagePicked
+                                ? Icon(
+                              Icons.check,
+                              color: Color(kLight.value),
+                            )
+                                : Icon(
+                              Icons.photo_library_outlined,
+                              color: Color(kLight.value),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Form(
+                      key: _Formkey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'User Name',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "User Name cannot be empty";
+                              }
+
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                          TextFormField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'User Name',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "User Name cannot be empty";
+                              }
+
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+
+
+                          TextFormField(
+                            controller: locationController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Enter Location',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Location cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: phoneController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Enter Phone Number',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Location cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Heading(
+                            text: "Professional Details",
+                            color: Color(kDark.value),
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Form(
+                      key: _formkey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: skillOneController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillTwoController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillThreeController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillFourController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillFiveController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    RoundButton(
+                      title: 'Update Information',
+                      loading: changeprofileNotifier.isLoading,
+                      onTap: () async {
+                        if (_formkey.currentState!.validate()) {
+                          changeprofileNotifier.isLoading = true;
+                          await _submitDetails();
+                          changeprofileNotifier.isLoading = false;
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+//Home Animaed Drawer
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:job_mobile_app/home_screen.dart';
+import 'package:job_mobile_app/view/common/app_bar.dart';
+import 'package:job_mobile_app/view/common/infor_card.dart';
+import 'package:job_mobile_app/view/common/smenu_sidebar_tile.dart';
+
+class drawer_animated extends StatefulWidget {
+  const drawer_animated({Key? key}) : super(key: key);
+
+  @override
+  _drawer_animatedState createState() => _drawer_animatedState();
+}
+
+class _drawer_animatedState extends State<drawer_animated> {
+  double value = 0;
+  late User currentUser;
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    fetchUserProfileData();
+  }
+
+  void getCurrentUser() {
+    currentUser = FirebaseAuth.instance.currentUser!;
+    print('Current User UID: ${currentUser.uid}');
+  }
+
+  void fetchUserProfileData() async {
+    print('Fetching user profile data...');
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Users_Profiles')
+          .where('User ID', isEqualTo: currentUser.uid)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          userData = snapshot.docs.first.data() as Map<String, dynamic>?;
+        });
+
+        // Print retrieved data for debugging
+        print('User Name: ${userData?['User Name']}');
+        print('Your Expertise: ${userData?['Your Expertise']}');
+        print('Profile Image URL: ${userData?['profileImageUrl']}');
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error fetching user profile data: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Background gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purpleAccent, Colors.deepPurpleAccent],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
+          ),
+
+          // Drawer
+          SafeArea(
+            child: Container(
+              width: 230,
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Fetch user profile information from Firestore
+                    InfoCard(
+                      name: userData?['User Name'] ?? 'Default',
+                      profession: userData?['Your Expertise'] ?? 'Your Expertise',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        top: 30,
+                        bottom: 16,
+                      ),
+                      child: Text(
+                        "Browse".toUpperCase(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ),
+                    SidemenuTile(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Main Screen
+          TweenAnimationBuilder(
+            curve: Curves.easeInOut,
+            tween: Tween<double>(begin: 0, end: value),
+            duration: const Duration(milliseconds: 500),
+            builder: (_, double val, __) {
+              return Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..setEntry(0, 3, 210 * val)
+                  ..rotateY((pi / 6) * val),
+                child: Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(50),
+                    child: Custom_AppBar(
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.all(12),
+                          child: CircleAvatar(
+                            radius: 15,
+                            // Use the current user's profile image URL
+                            backgroundImage: NetworkImage(userData?['profileImageUrl'] ?? 'Assets/Images/dp.jpg'),
+                          ),
+                        ),
+                      ],
+                      child: Column(
+                        children: [
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                value == 0 ? value = 1 : value = 0;
+                              });
+                            },
+                            child: Icon(Icons.menu_rounded, weight: 50),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  body: Center(child: Home_Screen()),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//UserSignup Screen
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:job_mobile_app/controllers/SignUp_Provider.dart';
+import 'package:job_mobile_app/controllers/login_provider.dart';
+import 'package:job_mobile_app/utils/Round_button.dart';
+import 'package:job_mobile_app/utils/utils.dart';
+import 'package:job_mobile_app/view/common/app_bar.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
+import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
+import 'package:provider/provider.dart';
+
+import '../../../resources/constants/app_colors.dart';
+
+
+
+class UserSignUp_Screen extends StatefulWidget {
+  const UserSignUp_Screen({super.key}); // Corrected the constructor
+
+  @override
+  State<UserSignUp_Screen> createState() => _UserSignUp_ScreenState();
+}
+
+class _UserSignUp_ScreenState extends State<UserSignUp_Screen> {
+  bool _isObscure3 = true;
+  bool _isObscure4 = true;
+  bool visible = false;
+  bool isLoading = false;
+  bool _hasError = false;
+  bool _isPasswordField = true;
+
+
+  final _formkey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController ConfirmpasswordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNumberController=TextEditingController();
+
+
+  FirebaseAuth _auth=FirebaseAuth.instance;
+
+  // Corrected the method override with @override
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  Future<void> _signUpAndStoreUserData() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final userData = {
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneNumberController.text,
+        // Add other fields as needed
+      };
+
+      // Use FirebaseFirestore.instance if you're using the latest version of cloud_firestore
+      // Import FirebaseFirestore if needed
+      await FirebaseFirestore.instance.collection('Users').doc(user.uid).set(userData);
+    }else{
+
+      print("Error in Collection");
+    }
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SignUpNotifier>(
+      builder: (context, signupNotifier, child) {
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(70),
+            child: Custom_AppBar(
+              title: Text('SignUp', style: TextStyle(color: Colors.black)),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(CupertinoIcons.arrow_left),
+              ),
+            ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Heading(
+                    text: 'Welcome to JobHub!',
+                    color: Color(kDark.value),
+
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  ReusableText(
+                    text: 'Fill the details to create your account', // Corrected the text
+                    color: Color(kDarkGrey.value),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    // Adjust width as needed
+                    child: Column(
+                      children: [
+                        Form(
+                          key: _formkey ,
+                            child:Column(
+                              children: [
+                                TextFormField(
+                                  controller: nameController,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Color(kGrey.value),
+                                    hintText: 'User Name',
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.blue),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "User Name cannot be empty";
+                                    }
+
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                ),
+                                SizedBox(height: 40),
+
+                                TextFormField(
+                                  controller: emailController,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Color(kGrey.value),
+                                    hintText: 'Email',
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.blue),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Email cannot be empty";
+                                    }
+                                    if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
+                                        .hasMatch(value)) {
+                                      return "Please enter a valid email";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                ),
+                                SizedBox(height: 40),
+
+                                TextFormField(
+                                  controller: phoneNumberController,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Color(kGrey.value),
+                                    hintText: 'Phone Number',
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.blue),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Phone Number cannot be empty";
+                                    }
+                                    // Add more validation if needed
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.phone,
+                                ),
+                                SizedBox(height: 40),
+                                TextFormField(
+                                  controller: passwordController,
+                                  obscureText: _isObscure3,
+                                  decoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _isObscure3=signupNotifier.isPasswordObscure;
+                                        signupNotifier.isPasswordObscure = !signupNotifier.isPasswordObscure;
+                                      },
+                                      child: Icon(
+                                        signupNotifier.isPasswordObscure ? Icons.visibility : Icons.visibility_off,
+                                      ),
+                                    ),
+
+                                    filled: true,
+                                    fillColor: Color(kGrey.value),
+                                    hintText: 'Password',
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.blue),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    final regex = RegExp(r'^.{6,}$');
+                                    if (value!.isEmpty) {
+                                      return "Password cannot be empty";
+                                    }
+                                    if (!regex.hasMatch(value)) {
+                                      return "Please enter a valid password (min. 6 characters)";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                ),
+                                SizedBox(height: 40),
+                                //Confirm Password
+                                TextFormField(
+                                  controller: ConfirmpasswordController,
+                                  obscureText: _isObscure4,
+                                  decoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _isObscure4=signupNotifier.isConfirmPasswordObscure;
+                                        signupNotifier.isConfirmPasswordObscure = !signupNotifier.isConfirmPasswordObscure;
+                                      },
+                                      child: Icon(
+                                        signupNotifier.isConfirmPasswordObscure ? Icons.visibility : Icons.visibility_off,
+                                      ),
+                                    ),
+
+                                    filled: true,
+                                    fillColor: Color(kGrey.value),
+                                    hintText: ' Confirm Password',
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.blue),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value != passwordController.text) {
+                                      return "Passwords do not match";
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                ),
+                                // SizedBox(height: 40),
+                                //Select Option
+
+
+                              ],
+                            ) ),
+
+
+                        SizedBox(height: 40),
+                        RoundButton(
+                          title: 'SignUp',
+                          loading: signupNotifier.isLoading,
+                          onTap: () async {
+                            if (_formkey.currentState!.validate()) {
+                              signupNotifier.isLoading = true;
+
+                              try {
+                                // Perform your signup logic here
+                                await _auth.createUserWithEmailAndPassword(
+                                  email: emailController.text.toString(),
+                                  password: passwordController.text.toString(),
+                                );
+
+                                // Store user data in Firestore
+                                await _signUpAndStoreUserData();
+
+                                // Set isLoading to false when signup and data storage are successful
+                                signupNotifier.isLoading = false;
+
+                                Utils().toastMessage(" User Signup Successfully ");
+                                Get.to(drawer_animated());
+                              } catch (error) {
+                                // Handle signup failure, if needed
+                                print('Signup error: $error');
+
+                                // Set isLoading to false in case of an error
+                                signupNotifier.isLoading = false;
+
+                                Utils().toastMessage(error.toString());
+                              }
+                            }
+                          },
+                        ),
+
+
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("Already have an account "),
+                            InkWell(
+                              onTap: () {
+                                Get.off(Login_Screen());
+                              },
+                              child: Text('Login', style: TextStyle(color: Color(kblue.value)),
+                              ),
+                            ),
+                          ],
+                        )],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+//User Profile
+
+
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:job_mobile_app/controllers/profile_updateProvider.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/utils/Round_button.dart';
+import 'package:job_mobile_app/utils/utils.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
+import 'package:provider/provider.dart';
+
+class Profile_Details extends StatefulWidget {
+  const Profile_Details({super.key});
+
+  @override
+  State<Profile_Details> createState() => _Profile_DetailsState();
+}
+
+class _Profile_DetailsState extends State<Profile_Details> {
+  File? _image;
+  final picker = ImagePicker();
+  final _Formkey = GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
+  File? _selectedImage;
+  bool isLoading = false;
+  bool isImagePicked = false;
+  bool _profileLoading = false;
+  String? _profileImageUrl;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  TextEditingController locationController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController skillOneController = TextEditingController();
+  TextEditingController skillTwoController = TextEditingController();
+  TextEditingController skillThreeController = TextEditingController();
+  TextEditingController skillFourController = TextEditingController();
+  TextEditingController skillFiveController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController expertiesController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserProfileData();
+  }
+
+  Future<void> getImage() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+        isImagePicked = true;
+      });
+
+      debugPrint("Image Picked Successfully");
+    } else {
+      print("No Image has been picked");
+    }
+  }
+
+  Future<String> _uploadImage() async {
+    try {
+      if (_selectedImage == null || !_selectedImage!.existsSync()) {
+        print('Selected image is null or does not exist. Cannot upload.');
+        return '';
+      }
+
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference storageReference =
+      storage.ref().child('profile_images/${DateTime.now()}.jpg');
+      await storageReference.putFile(_selectedImage!);
+      String imageUrl = await storageReference.getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return '';
+    }
+  }
+
+  Future<void> _submitDetails() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User? user = auth.currentUser;
+
+      if (user != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference usersCollection =
+        firestore.collection('Users_Profiles');
+
+        QuerySnapshot existingData = await usersCollection
+            .where('User ID', isEqualTo: user.uid)
+            .get();
+
+        if (existingData.docs.isNotEmpty) {
+          Map<String, dynamic> updateData = {
+            'User Name':nameController.text,
+            'Your Expertise':expertiesController.text,
+            'User Location': locationController.text,
+            'User Phone': phoneController.text,
+            'Skill one': skillOneController.text,
+            'Skill two': skillTwoController.text,
+            'Skill three': skillThreeController.text,
+            'Skill four': skillFourController.text,
+            'Skill five': skillFiveController.text,
+          };
+
+          if (_selectedImage != null) {
+            String imageUrl = await _uploadImage();
+            updateData['profileImageUrl'] = imageUrl;
+            _profileImageUrl = imageUrl;
+          } else if (_profileImageUrl != null && _profileImageUrl!.isNotEmpty) {
+            updateData['profileImageUrl'] = _profileImageUrl;
+          }
+
+          await usersCollection
+              .doc(existingData.docs.first.id)
+              .update(updateData);
+
+          Utils().toastMessage("Profile details updated successfully");
+          Get.to(drawer_animated());
+          print('User details updated successfully');
+        } else {
+          String imageUrl = await _uploadImage();
+          _profileImageUrl = imageUrl;
+          await usersCollection.add({
+            'User ID': user.uid,
+            'User Name':nameController.text,
+            'Your Expertise':expertiesController.text,
+            'User Location': locationController.text,
+            'User Phone': phoneController.text,
+            'profileImageUrl': imageUrl,
+            'Skill one': skillOneController.text,
+            'Skill two': skillTwoController.text,
+            'Skill three': skillThreeController.text,
+            'Skill four': skillFourController.text,
+            'Skill five': skillFiveController.text,
+          } as Map<String, dynamic>);
+
+          Utils().toastMessage("Profile details submitted successfully");
+          Get.to(drawer_animated());
+          print('User details submitted successfully');
+        }
+      } else {
+        print('User not authenticated. Unable to submit details.');
+      }
+    } catch (e) {
+      print('Error submitting user details: $e');
+    }
+  }
+
+  Future<void> fetchUserProfileData() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User? user = auth.currentUser;
+
+      if (user != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference usersCollection = firestore.collection('Users');
+        CollectionReference usersProfilesCollection = firestore.collection('Users_Profiles');
+
+        QuerySnapshot userData = await usersProfilesCollection
+            .where('User ID', isEqualTo: user.uid)
+            .get();
+
+        if (userData.docs.isNotEmpty) {
+          Map<String, dynamic> userMap = userData.docs.first.data() as Map<String, dynamic>;
+
+          setState(() {
+            locationController.text = userMap['User Location'] ?? '';
+            phoneController.text = userMap['User Phone'] ?? '';
+            skillOneController.text = userMap['Skill one'] ?? '';
+            skillTwoController.text = userMap['Skill two'] ?? '';
+            skillThreeController.text = userMap['Skill three'] ?? '';
+            skillFourController.text = userMap['Skill four'] ?? '';
+            skillFiveController.text = userMap['Skill five'] ?? '';
+
+            if (userMap.containsKey('profileImageUrl')) {
+              _profileImageUrl = userMap['profileImageUrl'];
+              isImagePicked = true;
+            }
+          });
+
+          // Fetch user name from 'Users' collection based on UID
+          DocumentSnapshot userDoc = await usersCollection.doc(user.uid).get();
+          if (userDoc.exists) {
+            String userName = userDoc['name'];
+            // Use userName as needed
+            nameController.text = userName;
+          }
+        }
+      }
+    } catch (e) {
+      print('Error fetching user profile data: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<changeprofileNotifier>(
+      builder: (context, changeprofileNotifier, child) {
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Heading(
+                          text: "Personal Details",
+                          color: Color(kDark.value),
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            getImage();
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: Color(kmycolor.value),
+                            child: isImagePicked
+                                ? Icon(
+                              Icons.check,
+                              color: Color(kLight.value),
+                            )
+                                : Icon(
+                              Icons.photo_library_outlined,
+                              color: Color(kLight.value),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Form(
+                      key: _Formkey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'User Name',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "User Name cannot be empty";
+                              }
+
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                          TextFormField(
+                            controller: expertiesController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Your Expertise',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "User Name cannot be empty";
+                              }
+
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+
+
+                          TextFormField(
+                            controller: locationController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Enter Location',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Location cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: phoneController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Enter Phone Number',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Location cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Heading(
+                            text: "Professional Details",
+                            color: Color(kDark.value),
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Form(
+                      key: _formkey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: skillOneController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillTwoController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillThreeController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillFourController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          TextFormField(
+                            controller: skillFiveController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(kGrey.value),
+                              hintText: 'Professional Skills',
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Skill cannot be empty";
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.text,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    RoundButton(
+                      title: 'Update Information',
+                      loading: changeprofileNotifier.isLoading,
+                      onTap: () async {
+                        if (_formkey.currentState!.validate()) {
+                          changeprofileNotifier.isLoading = true;
+                          await _submitDetails();
+                          changeprofileNotifier.isLoading = false;
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+//AnimtedHomeScreen
+
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:job_mobile_app/home_screen.dart';
+import 'package:job_mobile_app/view/common/app_bar.dart';
+import 'package:job_mobile_app/view/common/infor_card.dart';
+import 'package:job_mobile_app/view/common/smenu_sidebar_tile.dart';
+
+class drawer_animated extends StatefulWidget {
+  const drawer_animated({Key? key}) : super(key: key);
+
+  @override
+  _drawer_animatedState createState() => _drawer_animatedState();
+}
+
+class _drawer_animatedState extends State<drawer_animated> {
+  double value = 0;
+  late User currentUser;
+
+
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    currentUser = FirebaseAuth.instance.currentUser!;
+    if (currentUser != null) {
+      print('Current User UID: ${currentUser.uid}');
+    } else {
+      print('User not logged in');
+    }
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Background gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purpleAccent, Colors.deepPurpleAccent],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
+          ),
+
+          // Drawer
+          SafeArea(
+            child: Container(
+              width: 230,
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // InfoCard Widget to display user information
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(currentUser.uid)
+                          .collection('User_Profile')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Text('No data available');
+                        }
+
+                        final documents = snapshot.data!.docs;
+                        userData = documents.first.data()
+                        as Map<String, dynamic>;                 // Update userData here
+                        // print('Here is your data: $userData');
+
+                        return InfoCard(
+                          name: userData?['User Name'] ?? 'Default',
+                          profession:
+                              userData?['Your Expertise'] ?? 'Your Expertise',
+                        );
+                      },
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        top: 30,
+                        bottom: 16,
+                      ),
+                      child: Text(
+                        "Browse".toUpperCase(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ),
+                    SidemenuTile(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Main Screen
+          TweenAnimationBuilder(
+            curve: Curves.easeInOut,
+            tween: Tween<double>(begin: 0, end: value),
+            duration: const Duration(milliseconds: 500),
+            builder: (_, double val, __) {
+              return Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..setEntry(0, 3, 210 * val)
+                  ..rotateY((pi / 6) * val),
+                child: Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: const Size.fromHeight(50),
+                    child: Custom_AppBar(
+                      actions: [
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: CircleAvatar(
+                            radius: 25,
+                            // Use a placeholder image from assets or a default image URL here
+                            backgroundImage: userData?['profileImageUrl'] != null
+                                ? NetworkImage(userData?['profileImageUrl']!)
+                                : const AssetImage('Assets/Images/profile.png') as ImageProvider, // Use default from assets if URL not available
+                          ),
+
+                        ),
+                      ],
+                      child: Column(
+                        children: [
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                value == 0 ? value = 1 : value = 0;
+                              });
+                            },
+                            child: const Icon(Icons.menu_rounded, weight: 50),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  body: const Center(child: Home_Screen()),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+//Custom APP BAR
+
+import 'package:flutter/material.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+
+class Custom_AppBar extends StatelessWidget {
+  final String? text;
+  final Widget child;
+  final Widget? title;
+  final Widget? iconbutton;
+  final List<Widget>? actions;
+
+  const Custom_AppBar({
+    Key? key,
+    this.text,
+    required this.child,
+    this.title,
+    this.actions,
+    this.iconbutton
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      iconTheme: IconThemeData(),
+      backgroundColor: Colors.white54,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      leadingWidth: 70,
+      leading: child,
+      actions: actions,
+      centerTitle: true,
+      title: title ??
+          (text != null
+              ? Text(
+            text!,
+            style: TextStyle(fontSize: 20, color: Colors.black,fontWeight: FontWeight.bold), // Update color
+          )
+              : null),
+    );
+  }
+}
+
+
+//Profile Updated.
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:job_mobile_app/resources/constants/app_constant.dart';
+import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/view/common/app_bar.dart';
+import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
+
+class Profile_Page extends StatefulWidget {
+  const Profile_Page({Key? key});
+
+  @override
+  State<Profile_Page> createState() => _Profile_PageState();
+}
+
+class _Profile_PageState extends State<Profile_Page> {
+  double value = 0;
+  User? currentUser;
+  Map<String, dynamic>? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  Future<void> getCurrentUser() async {
+    currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      print('Current User UID: ${currentUser!.uid}');
+      setState(() {});
+    } else {
+      print('User not logged in');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(kprimary_colors.value),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            ),
+          ),
+          child: Custom_AppBar(
+            text: "Profile",
+            child: Column(
+              children: [
+                MaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      value == 0 ? value = 1 : value = 0;
+                    });
+                  },
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      // Handle back button press
+                      Get.to(drawer_animated());
+                    },
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 30,
+            bottom: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (currentUser != null)
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(currentUser!.uid)
+                      .collection('User_Profile')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    if (!snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
+                      return const Text('No data available');
+                    }
+
+                    final documents = snapshot.data!.docs;
+                    userData = documents.first.data()
+                    as Map<String, dynamic>?;
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundImage: NetworkImage(
+                                userData?['profileImageUrl'] ?? '',
+                              ),
+                            ),
+                            SizedBox(width: 18),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Heading(
+                                  text: userData?['User Name'] ?? '',
+                                  color: Color(kDark.value),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_pin,
+                                      color: Color(kDark.value),
+                                      size: 20,
+                                    ),
+                                    ReusableText(
+                                      text: userData?['User Location'] ?? '',
+                                      color: Color(kDarkGrey.value),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 35),
+                        Container(
+                          height: 130,
+                          width: double.infinity,
+                          color: Color(klightGrey.value),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                  height: 100,
+                                  width: 80,
+                                  color: Color(kLight.value),
+                                  child: Icon(
+                                    Icons.picture_as_pdf_rounded,
+                                    size: 70,
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 35,
+                                    left: 20,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Heading(
+                                        text: "Resume from JobPortal",
+                                        color: Color(kDark.value),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      ReusableText(
+                                        text: userData?['User CV'] ?? '',
+                                        color: Color(kDark.value),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 100),
+                                child: GestureDetector(
+                                  onTap: () {},
+                                  child: Heading(
+                                    text: "Edit",
+                                    color: Color(kRed.value),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          height: 60,
+                          width: double.infinity,
+                          color: Color(klightGrey.value),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                  height: 30,
+                                  width: 30,
+                                  color: Color(kLight.value),
+                                  child: Icon(
+                                    Icons.email_rounded,
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Heading(
+                                    text: userData?['User Email'] ?? '',
+                                    color: Color(kDark.value),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          height: 60,
+                          width: double.infinity,
+                          color: Color(klightGrey.value),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                  height: 30,
+                                  width: 30,
+                                  child: Image.asset("Assets/Images/pk.png"),
+                                ),
+                              ),
+                              Heading(
+                                text: userData?['User Phone'] ?? '',
+                                color: Color(kDark.value),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Container(
+                          height: 320,
+                          width: double.infinity,
+                          color: Color(klightGrey.value),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 10,
+                                  top: 10,
+                                  bottom: 10,
+                                ),
+                                child: Heading(
+                                  text: "Skills",
+                                  color: Color(kDark.value),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                    bottom: 10,
+                                  ),
+                                  child: ListView.builder(
+                                    itemCount: 5, // Assuming you have 5 skills
+                                    itemBuilder: (context, index) {
+                                      final skill =
+                                          userData?['Skill ${index + 1}'] ?? '';
+                                      return Container(
+                                        margin: EdgeInsets.only(bottom: 8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: Text(
+                                            skill,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              else
+                Text('No User Available'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

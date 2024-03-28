@@ -44,7 +44,7 @@ class _Main_ScreenState extends State<Main_Screen> {
   Widget currentScreen(Zoom_Notifier zoomNotifier) {
     switch (zoomNotifier.currentIndex) {
       case 0:
-        // return OnBoarding_Screen();
+         // return OnBoarding_Screen();
          return drawer_animated();
         //  return EmployerDashboard();
         //   return JobPostScreen();

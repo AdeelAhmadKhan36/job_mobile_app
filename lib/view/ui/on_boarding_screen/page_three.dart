@@ -27,7 +27,7 @@ class Page_Three extends StatelessWidget {
           ),
         ),
           Padding(
-            padding: const EdgeInsets.only(top: 650),
+            padding: const EdgeInsets.only(top: 550),
             child: Column(
               children: [
                 Center(

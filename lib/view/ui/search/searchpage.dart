@@ -108,7 +108,7 @@ class _SearchPageState extends State<Search_Page> {
                 Column(
                   children: searchResults.map((job) {
                     var jobData = job.data() as Map<String, dynamic>;
-                    return vertical_tile(
+                    return search_tile(
                       onTap: () {
                         // Handle tap on a search result
                       },
@@ -129,7 +129,7 @@ class _SearchPageState extends State<Search_Page> {
                       Heading(
                         text: "Start Searching For Jobs",
                         color: Color(kDark.value),
-                        fontSize: 28,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
                     ],
@@ -143,15 +143,16 @@ class _SearchPageState extends State<Search_Page> {
   }
 }
 
-class vertical_tile extends StatelessWidget {
-  const vertical_tile({
+
+class search_tile extends StatelessWidget {
+  const search_tile({
     Key? key,
     this.onTap,
     required this.companyName,
     required this.jobTitle,
     required this.imageUrl,
     required this.salary,
-    required this.jobId, // Add the jobId parameter
+    required this.jobId,
   }) : super(key: key);
 
   final void Function()? onTap;
@@ -159,7 +160,7 @@ class vertical_tile extends StatelessWidget {
   final String jobTitle;
   final String imageUrl;
   final String salary;
-  final String jobId; // Add this line
+  final String jobId;
 
   @override
   Widget build(BuildContext context) {
@@ -167,80 +168,96 @@ class vertical_tile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        height: 140,
         width: double.infinity,
-        color: Color(klightGrey.value),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(imageUrl),
-                ),
-                SizedBox(width: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Heading(
-                          text: companyName,
-                          color: Color(kDark.value),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        Text(
-                          jobTitle,
-                          style: TextStyle(
-                            color: Color(kDarkGrey.value),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigate to Job_Page when tapped
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Job_Page(
-                                id: jobId, // Pass the jobId to Job_Page
-                                title: jobTitle, // You can pass other relevant information as needed
-                              ),
-                            ),
-                          );
-                        },
-
-                        child: CircleAvatar(
-                          radius: 18,
-                          backgroundColor: Color(kLight.value),
-                          child: Icon(Icons.arrow_forward_ios_rounded),
-                        ),
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: Heading(
-                text: "${salary}/ Monthly",
-                color: Color(kDark.value),
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+        color: Colors.grey[200],
+        child: InkWell(
+          onTap: onTap,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(imageUrl),
               ),
-            ),
-          ],
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      companyName,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      jobTitle,
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "${salary}/ Monthly",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 10),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to Job_Page when tapped
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => JobPage(
+                        id: jobId,
+                        title: jobTitle,
+                      ),
+                    ),
+                  );
+                },
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.blue[100],
+                  child: Icon(Icons.arrow_forward_ios_rounded),
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class JobPage extends StatelessWidget {
+  final String id;
+  final String title;
+
+  const JobPage({Key? key, required this.id, required this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Implementation of JobPage widget
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Container(
+        child: Text('Job details'),
       ),
     );
   }

@@ -92,8 +92,10 @@ class _JobPostScreenState extends State<JobPostScreen> {
             'salary': selectedSalary,
             'jobDescription': descriptionController.text,
             'jobRequirements': requirementController.text,
+            'applicationReceived': false,
             'timestamp': FieldValue.serverTimestamp(),
             'popularity': 0, // Add this field
+
             // Add more fields as needed
           };
 

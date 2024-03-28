@@ -14,6 +14,12 @@ class ViewAllScreen extends StatelessWidget {
         ),
         backgroundColor: Color(kmycolor.value),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance

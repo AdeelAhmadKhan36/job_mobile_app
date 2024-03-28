@@ -16,6 +16,12 @@ class RecentViewAllScreen extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Color(kmycolor.value),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance

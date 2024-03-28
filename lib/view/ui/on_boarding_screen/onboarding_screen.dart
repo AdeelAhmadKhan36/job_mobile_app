@@ -3,6 +3,7 @@ import 'package:job_mobile_app/controllers/on_boarding_providers.dart';
 import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:job_mobile_app/view/ui/on_boarding_screen/page_one.dart';
 import 'package:job_mobile_app/view/ui/on_boarding_screen/page_three.dart';
 import 'package:job_mobile_app/view/ui/on_boarding_screen/page_two.dart';
@@ -48,7 +49,7 @@ class _OnBoarding_ScreenState extends State<OnBoarding_Screen> {
               Positioned(
                 left: 0,
                 right: 0,
-                bottom: 40,
+                bottom: 50,
                 child: onBoardNotifier.isLastPage
                     ? const SizedBox.shrink()
                     : Center(
@@ -79,7 +80,7 @@ class _OnBoarding_ScreenState extends State<OnBoarding_Screen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Home_Screen(),
+                            builder: (context) => drawer_animated(),
                           ),
                         );
                       },
