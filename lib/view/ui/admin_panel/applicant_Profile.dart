@@ -1,8 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
+import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/pdfview_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Applicant_Profile extends StatefulWidget {
   final String applicantUid;
@@ -18,7 +22,6 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
   Map<String, dynamic>? userData;
   List<String> skillKeys = [];
   bool isLoading = false;
-
 
   String _getFileName(String? filePath) {
     if (filePath == null || filePath.isEmpty) {
@@ -36,6 +39,9 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
       return decodedFileName;
     }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +152,14 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PDFViewerScreen(pdfUrl: userData?['User CV'] ?? ''),
+                                ),
+                              );
+                            },
                             child: Container(
                               height: 100,
                               width: 80,
@@ -166,8 +179,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                               left: 20,
                             ),
                             child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Heading(
                                   text: "Resume from JobPortal",
@@ -176,8 +188,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 ReusableText(
-                                  text: _getFileName(
-                                      userData?['User CV']),
+                                  text: _getFileName(userData?['User CV']),
                                   color: Color(kDark.value),
                                 ),
                               ],
@@ -244,8 +255,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                           child: Container(
                             height: 30,
                             width: 30,
-                            child:
-                            Image.asset("Assets/Images/pk.png"),
+                            child: Image.asset("Assets/Images/pk.png"),
                           ),
                         ),
                         Heading(
@@ -292,31 +302,25 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                                 final skill = userData?[key] ?? '';
                                 return skill.isNotEmpty
                                     ? Container(
-                                  margin: const EdgeInsets.only(
-                                      bottom: 8),
+                                  margin: const EdgeInsets.only(bottom: 8),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey
-                                            .withOpacity(0.5),
+                                        color: Colors.grey.withOpacity(0.5),
                                         spreadRadius: 1,
                                         blurRadius: 3,
-                                        offset:
-                                        const Offset(0, 2),
+                                        offset: const Offset(0, 2),
                                       ),
                                     ],
                                   ),
                                   child: Padding(
-                                    padding:
-                                    const EdgeInsets.all(
-                                        12),
+                                    padding: const EdgeInsets.all(12),
                                     child: Text(
                                       skill,
                                       style: const TextStyle(
                                         color: Colors.black,
-                                        fontWeight:
-                                        FontWeight.normal,
+                                        fontWeight: FontWeight.normal,
                                         fontSize: 16,
                                       ),
                                     ),
@@ -330,7 +334,6 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                       ],
                     ),
                   ),
-
                 ],
               );
             },
@@ -340,3 +343,5 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
     );
   }
 }
+
+
