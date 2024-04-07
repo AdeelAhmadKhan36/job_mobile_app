@@ -7,6 +7,7 @@ import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
+import 'package:job_mobile_app/view/ui/admin_panel/pdfview_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -288,7 +289,15 @@ class _Profile_PageState extends State<Profile_Page> {
                                   Padding(
                                     padding: const EdgeInsets.all(10),
                                     child: GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PDFViewerScreen(pdfUrl: userData?['User CV'] ?? ''),
+                                          ),
+                                        );
+                                      },
                                       child: Container(
                                         height: 100,
                                         width: 80,

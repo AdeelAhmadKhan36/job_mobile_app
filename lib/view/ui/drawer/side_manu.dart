@@ -22,8 +22,8 @@ class _Drawer_MenuState extends State<Drawer_Menu> {
           child: Column(
             children: [
               const InfoCard(
-                name: 'Adeel Ahmad',
-                profession: 'Flutter Developer',
+                 name: '',
+                profession: '',
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 0,top: 30,bottom: 16,right: 170),

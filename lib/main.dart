@@ -33,6 +33,7 @@ import 'package:job_mobile_app/controllers/profile_provider.dart';
 import 'package:job_mobile_app/controllers/profile_updateProvider.dart';
 import 'package:job_mobile_app/controllers/zoom_provider.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -72,7 +73,7 @@ class MyApp extends StatelessWidget {
               '/': (context) => Main_Screen(),
               '/chat': (context) => Chat_Screen(),
               '/bookmarks': (context) => BookMark_Screen(),
-              '/device_management': (context) => device_Managment_Page(),
+              '/device_management': (context) => DeviceManagementPage(),
               '/profile': (context) => Profile_Page(job: {
 
 

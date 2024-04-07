@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -62,17 +63,51 @@ class _SidemenuTileState extends State<SidemenuTile> {
 
   void _logout() async {
     try {
+      // Get the current user's UID
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+
+      // Fetch the device info documents for both user and admin
+      QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Users/$uid/user_logins')
+          .get();
+
+      QuerySnapshot adminSnapshot = await FirebaseFirestore.instance
+          .collection('Admins/$uid/admin_logins')
+          .get();
+
+      // Delete the documents from the 'user_logins' subcollection
+      userSnapshot.docs.forEach((doc) async {
+        await doc.reference.delete();
+      });
+
+      // Delete the documents from the 'admin_logins' subcollection
+      adminSnapshot.docs.forEach((doc) async {
+        await doc.reference.delete();
+      });
+
+      // Sign out the user
       await FirebaseAuth.instance.signOut();
       Get.off(drawer_animated());
-
       Utils().toastMessage('Logout Successful');
-
     } catch (e) {
       print('Error signing out: $e');
       Utils().toastMessage('Error signing out');
     }
   }
 
+  Future<bool> isAdmin() async {
+    // Get the current user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    // Check if the user exists and has the 'isAdmin' custom claim set to true
+    if (currentUser != null && currentUser.uid != null) {
+      final tokenResult = await currentUser.getIdTokenResult();
+      return tokenResult.claims?['isAdmin'] ?? false;
+    }
+
+    // Return false if user is null or UID is null
+    return false;
+  }
 
   Widget buildListTile(int index, IconData icon, String title) {
     return GestureDetector(
@@ -132,7 +167,7 @@ class _SidemenuTileState extends State<SidemenuTile> {
                           Navigator.of(context).pushReplacementNamed('/notifications');
                           break;
                         case 6:
-                         Navigator.of(context).pushReplacementNamed('/logout');
+                          Navigator.of(context).pushReplacementNamed('/logout');
                           _logout();
                           break;
                       }
