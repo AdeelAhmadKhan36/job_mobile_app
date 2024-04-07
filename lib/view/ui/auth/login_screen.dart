@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +22,7 @@ import 'package:provider/provider.dart';
 import '../../../resources/constants/app_colors.dart';
 
 class Login_Screen extends StatefulWidget {
-  const Login_Screen({super.key}); // Corrected the constructor
+  const Login_Screen({Key? key}) : super(key: key);
 
   @override
   State<Login_Screen> createState() => _Login_ScreenState();
@@ -36,65 +39,48 @@ class _Login_ScreenState extends State<Login_Screen> {
   final TextEditingController passwordController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
-  // Future<void> login() async {
-  //   try {
-  //     await _auth.signInWithEmailAndPassword(
-  //       email: emailController.text.toString(),
-  //       password: passwordController.text.toString(),
-  //     );
-  //
-  //     Utils().toastMessage("Login Successful");
-  //     print("Login Successful");
-  //
-  //     Get.to(Home_Screen());
-  //   } catch (error) {
-  //     Utils().toastMessage(error.toString());
-  //   }
-  // }
 
-  //Role base login function
-
-  Future<void> login() async {
+  Future<String> _getDeviceName() async {
+    String deviceName = '';
     try {
-      await _auth.signInWithEmailAndPassword(
-        email: emailController.text.toString(),
-        password: passwordController.text.toString(),
-      ).then((value) {
-
-        Utils().toastMessage("Login Successful");
-      }).onError((error, stackTrace) {
-        Utils().toastMessage(error.toString());
-      });
-
-
-
-      if (selectedRole == 'Login as User') {
-        // Check if the user exists in the "users" collection
-        bool userExists = await checkUserExists();
-        if (userExists) {
-          // Move to User Screen
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Profile_Details()));
-        } else {
-          Utils().toastMessage("User not found. Please sign up.");
-        }
-      } else if (selectedRole == 'Login as Admin') {
-        // Check if the admin exists in the "admins" collection
-        bool adminExists = await checkAdminExists();
-        if (adminExists) {
-          // Move to Admin Screen
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => admin_main_page()));
-        } else {
-          Utils().toastMessage("Admin not found. Please sign up.");
-        }
-      } else {
-        Utils().toastMessage("Role not recognized. Please sign up.");
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        deviceName = androidInfo.model;
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        deviceName = iosInfo.name;
       }
-    } catch (error) {
-      Utils().toastMessage(error.toString());
+    } catch (e) {
+      print('Failed to get device name: $e');
     }
+    return deviceName;
   }
+
+
+  Future<String> _getIPAddress() async {
+    String ipAddress = '';
+    try {
+      List<NetworkInterface> interfaces =
+      await NetworkInterface.list(includeLoopback: false, type: InternetAddressType.IPv4);
+      for (NetworkInterface interface in interfaces) {
+        for (InternetAddress address in interface.addresses) {
+          if (!address.isLoopback) {
+            ipAddress = address.address;
+            break;
+          }
+        }
+        if (ipAddress.isNotEmpty) {
+          break;
+        }
+      }
+    } catch (e) {
+      print('Failed to get IP address: $e');
+    }
+    return ipAddress;
+  }
+
+
 
   Future<bool> checkUserExists() async {
     try {
@@ -138,11 +124,86 @@ class _Login_ScreenState extends State<Login_Screen> {
     }
   }
 
-  // Corrected the method override with @override
+// Inside your login method
+  Future<void> login() async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: emailController.text.toString(),
+        password: passwordController.text.toString(),
+      ).then((value) async {
+        String deviceName = await _getDeviceName();
+        String ipAddress = await _getIPAddress();
+        DateTime loginTime = DateTime.now();
+        Map<String, dynamic> loginData = {
+          'deviceName': deviceName,
+          'ipAddress': ipAddress,
+          'loginTime': loginTime,
+        };
+
+        String collectionName;
+        if (selectedRole == 'Login as User') {
+          collectionName = 'Users/${value.user!.uid}/user_logins';
+        } else if (selectedRole == 'Login as Admin') {
+          collectionName = 'Admins/${value.user!.uid}/admin_logins';
+        } else {
+          Utils().toastMessage("Role not recognized. Please sign up.");
+          return;
+        }
+
+        // Check if the document already exists with the same deviceName and ipAddress
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection(collectionName)
+            .where('deviceName', isEqualTo: deviceName)
+            .where('ipAddress', isEqualTo: ipAddress)
+            .get();
+
+        if (querySnapshot.docs.isEmpty) {
+          // Add the login data only if no existing document found
+          await FirebaseFirestore.instance.collection(collectionName).add(loginData);
+
+          // Check if user or admin exists based on the selected role
+          if (selectedRole == 'Login as User') {
+            bool userExists = await checkUserExists();
+            if (userExists) {
+              // Move to User Screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => Profile_Details()),
+              );
+              Utils().toastMessage("Login Successful");
+            } else {
+              Utils().toastMessage("User not found. Please sign up.");
+            }
+          } else if (selectedRole == 'Login as Admin') {
+            bool adminExists = await checkAdminExists();
+            if (adminExists) {
+              // Move to Admin Screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => admin_main_page()),
+              );
+              Utils().toastMessage("Login Successful");
+            } else {
+              Utils().toastMessage("Admin not found. Please sign up.");
+            }
+          }
+        } else {
+          // Document with same deviceName and ipAddress already exists
+          Utils().toastMessage("You are already logged in from this device.");
+        }
+      }).onError((error, stackTrace) {
+        Utils().toastMessage(error.toString());
+        print(error);
+      });
+    } catch (error) {
+      Utils().toastMessage(error.toString());
+    }
+  }
+
+
   @override
   void dispose() {
     super.dispose();
-
     emailController.dispose();
     passwordController.dispose();
   }
@@ -177,8 +238,7 @@ class _Login_ScreenState extends State<Login_Screen> {
                     fontWeight: FontWeight.w600,
                   ),
                   ReusableText(
-                    text:
-                        'Fill the details to login to your account', // Corrected the text
+                    text: 'Fill the details to login to your account',
                     color: Color(kDarkGrey.value),
                   ),
                   SizedBox(height: 80),
@@ -206,7 +266,7 @@ class _Login_ScreenState extends State<Login_Screen> {
                               return "Email cannot be empty";
                             }
                             if (!RegExp(
-                                    r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
+                                r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]")
                                 .hasMatch(value)) {
                               return "Please enter a valid email";
                             }
@@ -221,14 +281,12 @@ class _Login_ScreenState extends State<Login_Screen> {
                           decoration: InputDecoration(
                             suffixIcon: GestureDetector(
                               onTap: () {
-                                _isObscure3 = loginNotifier.obsecuretext;
-                                loginNotifier.obsecuretext =
-                                    !loginNotifier.obsecuretext;
+                                setState(() {
+                                  _isObscure3 = !_isObscure3;
+                                });
                               },
                               child: Icon(
-                                loginNotifier.obsecuretext
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                                _isObscure3 ? Icons.visibility : Icons.visibility_off,
                               ),
                             ),
                             filled: true,
@@ -274,7 +332,6 @@ class _Login_ScreenState extends State<Login_Screen> {
                           style: TextStyle(color: Colors.black),
                           readOnly: true,
                           onTap: () {
-                            // Show the AlertDialog with options
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -285,36 +342,30 @@ class _Login_ScreenState extends State<Login_Screen> {
                                     children: [
                                       ElevatedButton(
                                         onPressed: () {
-                                          // Set selectedRole to 'User' and close the dialog
                                           setState(() {
                                             selectedRole = 'Login as User';
                                           });
                                           Navigator.pop(context);
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Color(kprimary_colors.value),
+                                          backgroundColor: Color(kprimary_colors.value),
                                         ),
                                         child: Text('Login as User',
-                                            style:
-                                                TextStyle(color: Colors.white)),
+                                            style: TextStyle(color: Colors.white)),
                                       ),
                                       SizedBox(height: 10),
                                       ElevatedButton(
                                         onPressed: () {
-                                          // Set selectedRole to 'Admin' and close the dialog
                                           setState(() {
                                             selectedRole = 'Login as Admin';
                                           });
                                           Navigator.pop(context);
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Color(kprimary_colors.value),
+                                          backgroundColor: Color(kprimary_colors.value),
                                         ),
                                         child: Text('Login as Admin',
-                                            style:
-                                                TextStyle(color: Colors.white)),
+                                            style: TextStyle(color: Colors.white)),
                                       ),
                                     ],
                                   ),
@@ -322,7 +373,6 @@ class _Login_ScreenState extends State<Login_Screen> {
                               },
                             );
                           },
-                          // Display the selected role in the TextFormField
                           controller: TextEditingController(text: selectedRole),
                         ),
                         SizedBox(height: 80),
@@ -387,11 +437,8 @@ void showSignupOptions(BuildContext context) {
               width: 170,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle user signup
-                  Navigator.pop(context); // Close the dialog
-
+                  Navigator.pop(context);
                   Get.to(UserSignUp_Screen());
-                  // Navigate to user signup screen or perform the signup logic
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(kprimary_colors.value),
@@ -408,10 +455,8 @@ void showSignupOptions(BuildContext context) {
               width: 170,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle admin signup
                   Navigator.pop(context);
-                  Get.to(AdminSignUp_Screen()); // Close the dialog
-                  // Navigate to admin signup screen or perform the signup logic
+                  Get.to(AdminSignUp_Screen());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(kprimary_colors.value),
