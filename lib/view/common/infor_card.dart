@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class InfoCard extends StatefulWidget {
 class _InfoCardState extends State<InfoCard> {
   late User? currentUser;
   Map<String, dynamic>? userData;
+  bool _isAdmin = false;
 
   @override
   void initState() {
@@ -30,21 +32,52 @@ class _InfoCardState extends State<InfoCard> {
     currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       debugPrint('Current User UID: ${currentUser!.uid}');
+      checkUserRole();
     } else {
       debugPrint('User not logged in');
+    }
+  }
+
+  Future<void> checkUserRole() async {
+    final userSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser!.uid)
+        .get();
+
+    final adminSnapshot = await FirebaseFirestore.instance
+        .collection('Admins')
+        .doc(currentUser!.uid)
+        .get();
+
+    setState(() {
+      _isAdmin = adminSnapshot.exists;
+    });
+
+    if (userSnapshot.exists) {
+      // User profile exists
+      setState(() {
+        _isAdmin = false;
+        userData = userSnapshot.data() as Map<String, dynamic>;
+      });
+    } else if (adminSnapshot.exists) {
+      // Admin profile exists
+      setState(() {
+        _isAdmin = true;
+        userData = adminSnapshot.data() as Map<String, dynamic>;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: currentUser != null
+      stream: currentUser != null && !_isAdmin
           ? FirebaseFirestore.instance
           .collection('Users')
           .doc(currentUser!.uid)
           .collection('User_Profile')
           .snapshots()
-          : null, // Pass null if currentUser is null
+          : null, // Pass null if currentUser is null or admin
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -53,36 +86,16 @@ class _InfoCardState extends State<InfoCard> {
           return Text('Error: ${snapshot.error}');
         }
 
-        if (!snapshot.hasData || snapshot.data == null || snapshot.data!.docs.isEmpty) {
-          return Row(
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 30,
                 // Use a placeholder image from assets or a default image URL here
                 backgroundImage: AssetImage('Assets/Images/profile.png'),
               ),
-              const SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Your Name',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Your Profession',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ]
           );
         }
 
@@ -104,7 +117,7 @@ class _InfoCardState extends State<InfoCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.name.isNotEmpty ? widget.name : 'Default Name',
+                  _isAdmin ? (userData?['name'] ?? 'Default Name') : (userData?['User Name'] ?? 'Default Name'),
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -112,7 +125,7 @@ class _InfoCardState extends State<InfoCard> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  widget.profession.isNotEmpty ? widget.profession : 'Default Profession',
+                  _isAdmin ? (userData?['email'] ?? 'Default Email') : (userData?['Your Expertise'] ?? 'Default Profession'),
                   style: const TextStyle(
                     color: Colors.white,
                   ),
@@ -125,3 +138,6 @@ class _InfoCardState extends State<InfoCard> {
     );
   }
 }
+
+
+
