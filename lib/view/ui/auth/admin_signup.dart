@@ -282,7 +282,7 @@ class _AdminSignUp_ScreenState extends State<AdminSignUp_Screen> {
                                 await StoreAdmin_Data();
                                 signupNotifier.isLoading = false;
                                 Utils().toastMessage("Admin Signup Successfully ");
-                                Get.to(EmployerDashboard());
+                                Get.to(Login_Screen());
 
 
 
