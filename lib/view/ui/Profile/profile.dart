@@ -66,10 +66,10 @@ class _Profile_PageState extends State<Profile_Page> {
     }
   }
 
+
   void submitApplication() {
     setState(() {
-      isLoading =
-          true; // Set isLoading to true when application submission begins
+      isLoading = true; // Set isLoading to true when application submission begins
     });
 
     String? adminUID = widget.job['adminUID'];
@@ -89,17 +89,14 @@ class _Profile_PageState extends State<Profile_Page> {
         .doc(adminUID)
         .collection('Job_Applications')
         .where('applicantUID', isEqualTo: currentUserUID)
-        .where('jobID',
-            isEqualTo: widget
-                .jobID) // Check if the user has already applied for this specific job
+        .where('jobID', isEqualTo: widget.jobID)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         // User has already applied for this job, prevent duplicate application
         Utils().toastMessage('You have Already Applied for this Job');
         setState(() {
-          isLoading =
-              false; // Set isLoading to false as application submission is complete
+          isLoading = false; // Set isLoading to false as application submission is complete
         });
       } else {
         // User has not applied for this job, proceed with application submission
@@ -124,37 +121,48 @@ class _Profile_PageState extends State<Profile_Page> {
                 .collection('my_jobs')
                 .doc(widget.jobID)
                 .update({'applicationReceived': true}).then((_) {
-              Navigator.of(context).pop();
-              Get.to(drawer_animated());
-              Utils().toastMessage('Application submitted successfully');
+              // Add the job to the "My_Applications" subcollection under the current user's UID in Users collection
+              FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(currentUserUID)
+                  .collection('My_Applications')
+                  .add({
+                'jobID': widget.jobID,
+                'status': 'submitted', // Set initial status to 'submitted'
+              }).then((_) {
+                Navigator.of(context).pop();
+                Get.to(drawer_animated());
+                Utils().toastMessage('Application submitted successfully');
 
-              setState(() {
-                isLoading =
-                    false; // Set isLoading to false as application submission is complete
+                setState(() {
+                  isLoading = false; // Set isLoading to false as application submission is complete
+                });
+              }).catchError((error) {
+                Utils().toastMessage('Failed to submit application! Please try again');
+
+                setState(() {
+                  isLoading = false; // Set isLoading to false if there's an error during application submission
+                });
               });
             }).catchError((error) {
               Utils().toastMessage('Failed to update job status in my_jobs');
 
               setState(() {
-                isLoading =
-                    false; // Set isLoading to false if there's an error during job status update in my_jobs
+                isLoading = false; // Set isLoading to false if there's an error during job status update in my_jobs
               });
             });
           }).catchError((error) {
             Utils().toastMessage('Failed to update job status in Jobs');
 
             setState(() {
-              isLoading =
-                  false; // Set isLoading to false if there's an error during job status update in Jobs
+              isLoading = false; // Set isLoading to false if there's an error during job status update in Jobs
             });
           });
         }).catchError((error) {
-          Utils()
-              .toastMessage('Failed to submit application! Please try again');
+          Utils().toastMessage('Failed to submit application! Please try again');
 
           setState(() {
-            isLoading =
-                false; // Set isLoading to false if there's an error during application submission
+            isLoading = false; // Set isLoading to false if there's an error during application submission
           });
         });
       }
@@ -162,8 +170,7 @@ class _Profile_PageState extends State<Profile_Page> {
       Utils().toastMessage('Please try again');
 
       setState(() {
-        isLoading =
-            false; // Set isLoading to false if there's an error checking existing applications
+        isLoading = false; // Set isLoading to false if there's an error checking existing applications
       });
     });
   }
