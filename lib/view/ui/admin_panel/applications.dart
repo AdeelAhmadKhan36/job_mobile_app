@@ -128,13 +128,15 @@ class JobApplicationsScreen extends StatelessWidget {
                             subtitle: Row(
                               children: [
                                 Text('Job Title:',style: TextStyle(fontWeight: FontWeight.bold),),
-                                Text(' ${jobData['jobTitle']}'),
+                                SizedBox(width: 20,),
+                                Flexible(child: Text(' ${jobData['jobTitle']}')),
                               ],
                             ),
                             trailing: ElevatedButton(
                               onPressed: () {
                                 Get.to(Applicant_Profile(
-                                    applicantUid: applicantUid));
+                                    applicantUid: applicantUid,
+                                  jobId:jobId,));
                               },
                               child: Text('View Profile'),
                             ),
