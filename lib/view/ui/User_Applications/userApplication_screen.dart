@@ -15,6 +15,32 @@ class UserApplicationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (userId == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Your Applications',
+            style: TextStyle(color: Colors.white),
+          ),
+
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Get.to(drawer_animated());
+            },
+          ),
+          centerTitle: true,
+          backgroundColor: Color(kmycolor.value),
+        ),
+        body: Center(
+          child: Text(
+            'Please login as User to view your applications.',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,13 +72,12 @@ class UserApplicationsScreen extends StatelessWidget {
           }
 
           var applications = snapshot.data?.docs;
-
           if (applications == null || applications.isEmpty) {
             return Center(
                 child: Text(
-              'No applications submitted yet.',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ));
+                  'No applications submitted yet.',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ));
           }
 
           return Padding(
@@ -61,11 +86,11 @@ class UserApplicationsScreen extends StatelessWidget {
               child: Column(
                 children: applications.map((application) {
                   var applicationData =
-                      application.data() as Map<String, dynamic>;
+                  application.data() as Map<String, dynamic>;
 
                   return FutureBuilder(
                     future: FirebaseFirestore.instance
-                        .collection('Jobs')
+                        .collection('Users_Jobs')
                         .doc(applicationData['jobID'])
                         .get(),
                     builder:
@@ -80,7 +105,7 @@ class UserApplicationsScreen extends StatelessWidget {
                       }
 
                       var jobData =
-                          jobSnapshot.data!.data() as Map<String, dynamic>;
+                      jobSnapshot.data!.data() as Map<String, dynamic>;
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 20),
@@ -96,13 +121,13 @@ class UserApplicationsScreen extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 30,
                                     backgroundImage:
-                                        NetworkImage(jobData['imageUrl']),
+                                    NetworkImage(jobData['imageUrl']),
                                   ),
                                   SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Heading(
                                           text: jobData['companyName'],
@@ -133,10 +158,10 @@ class UserApplicationsScreen extends StatelessWidget {
                                         if (jobData['companyName'] != null &&
                                             applicationData['jobID'] != null) {
                                           Get.to(() => Job_Page(
-                                                title: jobData['companyName']!,
-                                                id: applicationData['jobID']!,
-                                                showApplyButton: false,
-                                              ));
+                                            title: jobData['companyName']!,
+                                            id: applicationData['jobID']!,
+                                            showApplyButton: false,
+                                          ));
                                         } else {
                                           // Handle the case when companyName or jobID is null
                                           // For example, you can show a toast message or navigate to a different page
