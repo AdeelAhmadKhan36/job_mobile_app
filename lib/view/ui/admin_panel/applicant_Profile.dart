@@ -1,17 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
-import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/pdfview_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Applicant_Profile extends StatefulWidget {
   final String applicantUid;
+  final String jobId;
 
-  const Applicant_Profile({Key? key, required this.applicantUid}) : super(key: key);
+  const Applicant_Profile({Key? key, required this.applicantUid, required this.jobId}) : super(key: key);
 
   @override
   State<Applicant_Profile> createState() => _Applicant_ProfileState();
@@ -21,7 +21,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
   double value = 0;
   Map<String, dynamic>? userData;
   List<String> skillKeys = [];
-  bool isLoading = false;
+  late String _selectedAction = 'Select Action';
 
   String _getFileName(String? filePath) {
     if (filePath == null || filePath.isEmpty) {
@@ -40,11 +40,55 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
     }
   }
 
-
+  void handleAction(String jobId, String applicantUid, String action) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(applicantUid)
+        .collection('My_Applications')
+        .where('jobID', isEqualTo: jobId)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.update({'status': action}).then((_) {
+          if (action == 'Accepted') {
+            // Update the status of all other applicants for this job to "Rejected"
+            FirebaseFirestore.instance
+                .collection('Users')
+                .where('My_Applications', arrayContains: {'jobID': jobId})
+                .get()
+                .then((querySnapshot) {
+              querySnapshot.docs.forEach((applicantDoc) {
+                if (applicantDoc.id != applicantUid) {
+                  applicantDoc.reference
+                      .collection('My_Applications')
+                      .where('jobID', isEqualTo: jobId)
+                      .get()
+                      .then((applicationQuerySnapshot) {
+                    applicationQuerySnapshot.docs.forEach((applicationDoc) {
+                      if (applicationDoc['status'] != 'Accepted') {
+                        applicationDoc.reference.update({'status': 'Rejected'});
+                      }
+                    });
+                  });
+                }
+              });
+            }).catchError((error) {
+              print('Error updating application status: $error');
+            });
+          }
+        }).catchError((error) {
+          print('Error updating application status: $error');
+        });
+      });
+    }).catchError((error) {
+      print('Error updating application status: $error');
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -195,18 +239,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 100),
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Heading(
-                              text: "Edit",
-                              color: Color(kRed.value),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+
                       ],
                     ),
                   ),
@@ -340,8 +373,46 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
           ),
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          height: 60.0,
+          color: Color(kOrange.value),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Center(child: Text("Accept or Reject the Application",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+
+              DropdownButton<String>(
+                value: _selectedAction,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedAction = newValue ?? '';
+                  });
+                  // Perform action based on the selected value
+                  if (_selectedAction == 'Accepted' || _selectedAction == 'Rejected') {
+                    // Pass all four arguments to handleAction
+                    handleAction(widget.jobId, widget.applicantUid, _selectedAction);
+                  } else if (_selectedAction == null) {
+                    print('Selection is null');
+                  } else {
+                    print('Invalid action');
+                  }
+                },
+                items: <String>['Select Action', 'Accepted', 'Rejected']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              )
+
+
+
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
-
-
