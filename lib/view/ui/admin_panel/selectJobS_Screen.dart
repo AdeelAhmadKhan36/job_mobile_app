@@ -38,7 +38,7 @@ class SelectJobScreen extends StatelessWidget {
               
                   List<DocumentSnapshot>? jobDocs = snapshot.data;
               
-                  if (jobDocs == null || jobDocs.isEmpty) {
+                  if (jobDocs==null || jobDocs.isEmpty) {
                     return Center(child: Text('No jobs available'));
                   }
               
@@ -47,13 +47,24 @@ class SelectJobScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       DocumentSnapshot jobDoc = jobDocs[index];
                       String jobTitle = jobDoc['jobTitle'];
+                      String applicationsStatus = jobDoc['applicationsStatus'] ?? 'submitted'; // Default to 'submitted' if status is null
+
+                      // Define the icon to display based on the applicationsStatus
+                      IconData iconData;
+                      if (applicationsStatus == 'Accepted') {
+                        iconData = Icons.check_circle; // Accepted icon
+                      } else if (applicationsStatus == 'Rejected') {
+                        iconData = Icons.cancel; // Rejected icon
+                      } else {
+                        iconData = Icons.arrow_forward_ios_rounded; // Default forward icon
+                      }
+
                       return Padding(
                         padding: const EdgeInsets.only(top: 30,left: 20,right: 10),
                         child: Container(
-              
                           decoration: BoxDecoration(
                               color: Color(klightGrey.value),
-                            borderRadius: BorderRadius.all(Radius.circular(10))
+                              borderRadius: BorderRadius.all(Radius.circular(10))
                           ),
                           child: ListTile(
                             title: Row(
@@ -64,33 +75,39 @@ class SelectJobScreen extends StatelessWidget {
                                     Icon(Icons.work,size: 30,),
                                     SizedBox(width: 20,),
                                     Text(jobTitle,style:TextStyle(fontWeight:FontWeight.bold),),
-              
                                   ],
                                 ),
-              
-                                GestureDetector(
-                                  onTap: () {
-              
-                                    Get.to(JobApplicationsScreen(jobId: jobDoc.id));
-              
-                                  },
-                                  child: CircleAvatar(
+                                if (applicationsStatus != 'submitted') // Show the icon only if the status is not 'submitted'
+                                  CircleAvatar(
                                     radius: 18,
                                     backgroundColor: Color(kLight.value),
                                     child: Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      color: Color(kmycolor.value),
+                                      iconData, // Display the determined icon
+                                      color: applicationsStatus == 'Accepted' ? Colors.green : Colors.red, // Display green color for Accepted and red color for Rejected
                                     ),
                                   ),
-                                ),
+                                if (applicationsStatus == 'submitted') // Show the icon only if the status is not 'submitted'
+                                  CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: Color(kLight.value),
+                                    child: Icon(
+                                      iconData, // Display the determined icon
+                                      color: applicationsStatus == 'Accepted' ? Colors.green : Colors.red, // Display green color for Accepted and red color for Rejected
+                                    ),
+                                  ),
                               ],
                             ),
-              
+                            onTap: () {
+                              if (applicationsStatus == 'submitted') {
+                                Get.to(JobApplicationsScreen(jobId: jobDoc.id));
+                              }
+                            },
                           ),
                         ),
                       );
                     },
                   );
+
                 },
               ),
             ),
@@ -103,7 +120,7 @@ class SelectJobScreen extends StatelessWidget {
   Future<List<DocumentSnapshot>> _fetchJobsWithApplications() async {
     // Fetch jobs where applicationReceived is true
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('Jobs')
+        .collection('Users_Jobs')
         .where('applicationReceived', isEqualTo: true)
         .get();
     List<DocumentSnapshot> jobDocs = querySnapshot.docs;
