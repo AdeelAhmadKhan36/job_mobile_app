@@ -72,8 +72,41 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                   });
                 }
               });
+
+              // Update the applicationStatus in Users_Job collection
+              FirebaseFirestore.instance
+                  .collection('Users_Job')
+                  .doc(jobId)
+                  .update({'applicationStatus': action})
+                  .then((_) {
+                print('Application status updated in Users_Job collection');
+              }).catchError((error) {
+                print('Error updating application status in Users_Job collection: $error');
+              });
+
+              // Remove the job from the Jobs collection when it's accepted
+              FirebaseFirestore.instance
+                  .collection('Jobs')
+                  .doc(jobId)
+                  .delete()
+                  .then((_) {
+                print('Job removed from Jobs collection');
+              }).catchError((error) {
+                print('Error removing job from Jobs collection: $error');
+              });
             }).catchError((error) {
               print('Error updating application status: $error');
+            });
+          } else if (action == 'Rejected') {
+            // Update the applicationStatus in Users_Job collection to "Rejected" when action is "Rejected"
+            FirebaseFirestore.instance
+                .collection('Users_Job')
+                .doc(jobId)
+                .update({'applicationStatus': action})
+                .then((_) {
+              print('Application status updated in Users_Job collection');
+            }).catchError((error) {
+              print('Error updating application status in Users_Job collection: $error');
             });
           }
         }).catchError((error) {
