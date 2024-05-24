@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:job_mobile_app/view/ui/User_Applications/userApplication_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -10,7 +12,6 @@ import 'package:job_mobile_app/view/ui/Notification_Page.dart';
 import 'package:job_mobile_app/view/ui/Splash_Screen.dart';
 import 'package:job_mobile_app/view/ui/Profile/profile.dart';
 import 'package:job_mobile_app/view/ui/bookmark/BookMarkPage.dart';
-import 'package:job_mobile_app/view/ui/chat/chat_screen.dart';
 import 'package:job_mobile_app/view/ui/device_manag/device_Managment_Page.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
@@ -45,7 +46,9 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+   MyApp({Key? key}) : super(key: key);
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Zoom_Notifier()),
         ChangeNotifierProvider(create: (_) => Profile_Notifier()),
         ChangeNotifierProvider(create: (_) => Home_Notifier()),
-        ChangeNotifierProvider(create: (_) => Chat_Notifier()),
+        ChangeNotifierProvider(create: (_) => userApp_Notifier()),
         ChangeNotifierProvider(create: (_) => Bookmark_Notifier()),
         ChangeNotifierProvider(create: (_) => Device_Managment()),
         ChangeNotifierProvider(create: (_) => History_Notifier()),
@@ -71,7 +74,7 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
             routes: {
               '/': (context) => Main_Screen(),
-              '/chat': (context) => Chat_Screen(),
+              '/application': (context) => UserApplicationsScreen(userId:userId),
               '/bookmarks': (context) => BookMark_Screen(),
               '/device_management': (context) => DeviceManagementPage(),
               '/profile': (context) => Profile_Page(job: {

@@ -7,7 +7,6 @@ import 'package:job_mobile_app/resources/constants/app_colors.dart';
 
 class JobApplicationsScreen extends StatelessWidget {
   final String jobId;
-
   const JobApplicationsScreen({Key? key, required this.jobId})
       : super(key: key);
 
@@ -68,7 +67,7 @@ class JobApplicationsScreen extends StatelessWidget {
               }
 
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(child: Text('No applications found'));
+                return Center(child: Text('No application found'));
               }
 
               return ListView.builder(
@@ -107,13 +106,12 @@ class JobApplicationsScreen extends StatelessWidget {
                       String username = userData['name'];
 
                       return Padding(
-                        padding:
-                        const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: Container(
                           decoration: BoxDecoration(
-                              color: Color(klightGrey.value),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(10))),
+                            color: Color(klightGrey.value),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
                           child: ListTile(
                             title: Row(
                               children: [
@@ -121,23 +119,45 @@ class JobApplicationsScreen extends StatelessWidget {
                                   'Applicant:',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(width: 5,),
-                                Text('$username'),
+                                SizedBox(width: 5),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Text(
+                                      '$username',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                             subtitle: Row(
                               children: [
-                                Text('Job Title:',style: TextStyle(fontWeight: FontWeight.bold),),
-                                SizedBox(width: 20,),
-                                Flexible(child: Text(' ${jobData['jobTitle']}')),
+                                Text(
+                                  'Job Title:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 5),
+                                Flexible(
+                                  child: Text(
+                                    '${jobData['jobTitle']}',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                             trailing: ElevatedButton(
                               onPressed: () {
                                 Get.to(Applicant_Profile(
-                                    applicantUid: applicantUid,
-                                  jobId:jobId,));
+                                  applicantUid: applicantUid,
+                                  jobId: jobId,
+                                ));
                               },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: Size(80, 30), // Set minimum size for the button
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                textStyle: TextStyle(fontSize: 12), // Smaller text size
+                              ),
                               child: Text('View Profile'),
                             ),
                           ),

@@ -93,8 +93,10 @@ class _JobPostScreenState extends State<JobPostScreen> {
             'jobDescription': descriptionController.text,
             'jobRequirements': requirementController.text,
             'applicationReceived': false,
+            'applicationsStatus': "submitted",
             'timestamp': FieldValue.serverTimestamp(),
             'popularity': 0, // Add this field
+
 
             // Add more fields as needed
           };
@@ -103,7 +105,32 @@ class _JobPostScreenState extends State<JobPostScreen> {
           DocumentReference jobRef =
           await _firestore.collection('Jobs').add(jobData);
 
+
           // Check if the job was successfully added to Firestore
+          if (jobRef.id.isNotEmpty) {
+            // Create a subcollection under Admins for the current user
+            CollectionReference myJobsRef = _firestore
+                .collection('Users_Jobs');
+            // Store job details in the my_jobs subcollection
+            await myJobsRef.doc(jobRef.id).set(jobData);
+
+            // Clear the text field controllers
+            companyNameController.clear();
+            jobtitleController.clear();
+            descriptionController.clear();
+            requirementController.clear();
+            joblocationController.clear();
+
+            // Clear the image selection
+            setState(() {
+              _image = null;
+            });
+
+            setState(() {
+              selectedSalary = null; // Set it to an empty string or null based on your logic
+            });
+
+          }
           if (jobRef.id.isNotEmpty) {
             // Create a subcollection under Admins for the current user
             CollectionReference myJobsRef = _firestore
@@ -228,7 +255,7 @@ class _JobPostScreenState extends State<JobPostScreen> {
 
               DropdownButtonFormField<String>(
                 // value: selectedJobTiming,
-                decoration: InputDecoration(labelText: 'Select Job Timing'),
+                decoration: InputDecoration(labelText: 'Select Job Type'),
                 items: [
                   'Full Time',
                   'Part Time',

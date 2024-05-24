@@ -99,7 +99,7 @@ class _OnBoarding_ScreenState extends State<OnBoarding_Screen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Home_Screen(),
+                              builder: (context) => drawer_animated(),
                             ),
                           );
                         } else {

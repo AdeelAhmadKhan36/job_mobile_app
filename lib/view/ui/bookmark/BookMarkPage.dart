@@ -193,6 +193,7 @@ class VerticalTile extends StatelessWidget {
                           Get.to(() => Job_Page(
                             title: companyName,
                             id: bookmarkedJobs[index].id,
+                            showApplyButton: true,
                           ));
                         },
                         child: CircleAvatar(

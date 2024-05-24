@@ -11,7 +11,8 @@ class Applicant_Profile extends StatefulWidget {
   final String applicantUid;
   final String jobId;
 
-  const Applicant_Profile({Key? key, required this.applicantUid, required this.jobId}) : super(key: key);
+
+  const Applicant_Profile({Key? key, required this.applicantUid, required this.jobId,}) : super(key: key);
 
   @override
   State<Applicant_Profile> createState() => _Applicant_ProfileState();
@@ -40,7 +41,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
     }
   }
 
-  void handleAction(String jobId, String applicantUid, String action) {
+  void handleAction(String jobId, String applicantUid, String action,) {
     FirebaseFirestore.instance
         .collection('Users')
         .doc(applicantUid)
@@ -73,6 +74,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                 }
               });
 
+
               // Update the applicationStatus in Users_Job collection
               FirebaseFirestore.instance
                   .collection('Users_Job')
@@ -83,6 +85,21 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
               }).catchError((error) {
                 print('Error updating application status in Users_Job collection: $error');
               });
+
+              //Application status update in my_Jobs in Admins collectgion
+
+              // Update the applicationStatus in Admins collection under the specific adminUID
+              // FirebaseFirestore.instance
+              //     .collection('Admins')
+              //     .doc(adminUID) // Replace with the actual adminUID
+              //     .collection('my_jobs')
+              //     .doc(jobId)
+              //     .update({'applicationStatus': action})
+              //     .then((_) {
+              //   print('Application status updated in Admins collection');
+              // }).catchError((error) {
+              //   print('Error updating application status in Admins collection: $error');
+              // });
 
               // Remove the job from the Jobs collection when it's accepted
               FirebaseFirestore.instance
@@ -406,14 +423,14 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 20,right: 20,bottom: 10),
         child: Container(
           height: 60.0,
           color: Color(kOrange.value),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Center(child: Text("Accept or Reject the Application",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
 
               DropdownButton<String>(
                 value: _selectedAction,
@@ -424,7 +441,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
                   // Perform action based on the selected value
                   if (_selectedAction == 'Accepted' || _selectedAction == 'Rejected') {
                     // Pass all four arguments to handleAction
-                    handleAction(widget.jobId, widget.applicantUid, _selectedAction);
+                    handleAction(widget.jobId, widget.applicantUid, _selectedAction,);
                   } else if (_selectedAction == null) {
                     print('Selection is null');
                   } else {

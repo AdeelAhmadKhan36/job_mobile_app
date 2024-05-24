@@ -9,7 +9,6 @@ import 'package:job_mobile_app/utils/Round_button.dart';
 import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
-import 'package:job_mobile_app/view/ui/auth/LogoutScreen.dart';
 import 'package:job_mobile_app/view/ui/auth/login_screen.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';

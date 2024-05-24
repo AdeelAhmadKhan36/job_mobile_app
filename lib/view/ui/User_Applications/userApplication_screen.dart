@@ -56,7 +56,7 @@ class UserApplicationsScreen extends StatelessWidget {
           },
         ),
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Users')
             .doc(userId)
@@ -88,11 +88,11 @@ class UserApplicationsScreen extends StatelessWidget {
                   var applicationData =
                   application.data() as Map<String, dynamic>;
 
-                  return FutureBuilder(
-                    future: FirebaseFirestore.instance
+                  return StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
                         .collection('Users_Jobs')
                         .doc(applicationData['jobID'])
-                        .get(),
+                        .snapshots(),
                     builder:
                         (context, AsyncSnapshot<DocumentSnapshot> jobSnapshot) {
                       if (jobSnapshot.connectionState ==

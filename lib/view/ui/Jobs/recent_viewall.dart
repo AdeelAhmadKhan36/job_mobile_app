@@ -97,6 +97,7 @@ class RecentViewAllScreen extends StatelessWidget {
                                     Get.to(() => Job_Page(
                                       title: jobData['companyName'],
                                       id: job.id,
+                                      showApplyButton: true,
                                     ));
                                   },
                                   child: CircleAvatar(

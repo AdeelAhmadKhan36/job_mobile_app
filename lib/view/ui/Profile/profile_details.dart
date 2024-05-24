@@ -310,11 +310,15 @@ class _Profile_DetailsState extends State<Profile_Details> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Heading(
-                          text: "Personal Details",
-                          color: Color(kDark.value),
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                        Row(
+                          children: [
+                            Heading(
+                              text: "Personal Details",
+                              color: Color(kDark.value),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
                         ),
                         GestureDetector(
                           onTap: () {

@@ -10,6 +10,7 @@ import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/pdfview_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class Profile_Page extends StatefulWidget {
   final Map<String, dynamic> job;
@@ -121,27 +122,39 @@ class _Profile_PageState extends State<Profile_Page> {
                 .collection('my_jobs')
                 .doc(widget.jobID)
                 .update({'applicationReceived': true}).then((_) {
-              // Add the job to the "My_Applications" subcollection under the current user's UID in Users collection
+              // Update the job document in User_Jobs collection to set applicationReceived to true
               FirebaseFirestore.instance
-                  .collection('Users')
-                  .doc(currentUserUID)
-                  .collection('My_Applications')
-                  .add({
-                'jobID': widget.jobID,
-                'status': 'submitted', // Set initial status to 'submitted'
-              }).then((_) {
-                Navigator.of(context).pop();
-                Get.to(drawer_animated());
-                Utils().toastMessage('Application submitted successfully');
+                  .collection('Users_Jobs')
+                  .doc(widget.jobID)
+                  .update({'applicationReceived': true}).then((_) {
+                // Add the job to the "My_Applications" subcollection under the current user's UID in Users collection
+                FirebaseFirestore.instance
+                    .collection('Users')
+                    .doc(currentUserUID)
+                    .collection('My_Applications')
+                    .add({
+                  'jobID': widget.jobID,
+                  'status': 'submitted', // Set initial status to 'submitted'
+                }).then((_) {
+                  Navigator.of(context).pop();
+                  Get.to(drawer_animated());
+                  Utils().toastMessage('Application submitted successfully');
 
-                setState(() {
-                  isLoading = false; // Set isLoading to false as application submission is complete
+                  setState(() {
+                    isLoading = false; // Set isLoading to false as application submission is complete
+                  });
+                }).catchError((error) {
+                  Utils().toastMessage('Failed to submit application! Please try again');
+
+                  setState(() {
+                    isLoading = false; // Set isLoading to false if there's an error during application submission
+                  });
                 });
               }).catchError((error) {
-                Utils().toastMessage('Failed to submit application! Please try again');
+                Utils().toastMessage('Failed to update job status in User_Jobs');
 
                 setState(() {
-                  isLoading = false; // Set isLoading to false if there's an error during application submission
+                  isLoading = false; // Set isLoading to false if there's an error during job status update in User_Jobs
                 });
               });
             }).catchError((error) {
@@ -173,7 +186,11 @@ class _Profile_PageState extends State<Profile_Page> {
         isLoading = false; // Set isLoading to false if there's an error checking existing applications
       });
     });
+
+
+
   }
+
 
   @override
   Widget build(BuildContext context) {

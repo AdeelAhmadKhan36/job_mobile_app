@@ -33,7 +33,7 @@ class _SidemenuTileState extends State<SidemenuTile> {
           children: [
             buildListTile(0, Icons.home, 'Home'),
             buildDivider(),
-            buildListTile(1, Icons.chat_bubble_outline, 'Chat'),
+            buildListTile(1, Icons.chat_bubble_outline, 'Applications'),
             buildDivider(),
             buildListTile(2, Icons.bookmark_add_outlined, 'Bookmarks'),
             buildDivider(),
@@ -152,7 +152,7 @@ class _SidemenuTileState extends State<SidemenuTile> {
                           Navigator.of(context).pushReplacementNamed('/');
                           break;
                         case 1:
-                          Navigator.of(context).pushReplacementNamed('/chat');
+                          Navigator.of(context).pushReplacementNamed('/application');
                           break;
                         case 2:
                           Navigator.of(context).pushReplacementNamed('/bookmarks');

@@ -13,6 +13,7 @@ import 'package:job_mobile_app/utils/utils.dart';
 import 'package:job_mobile_app/view/common/app_bar.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/Main_Screen.dart';
+import 'package:job_mobile_app/view/ui/Profile/admin_profile.dart';
 import 'package:job_mobile_app/view/ui/Profile/profile_details.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/admin_drawer.dart';
 import 'package:job_mobile_app/view/ui/auth/admin_signup.dart';
@@ -180,7 +181,7 @@ class _Login_ScreenState extends State<Login_Screen> {
               // Move to Admin Screen
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => admin_main_page()),
+                MaterialPageRoute(builder: (context) => Admin_profile_details()),
               );
               Utils().toastMessage("Login Successful");
             } else {
