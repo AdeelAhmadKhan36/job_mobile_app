@@ -22,7 +22,7 @@ class Page_Two extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 530),
+            padding: const EdgeInsets.only(top: 600),
             child: Column(
               children: [
                 Center(

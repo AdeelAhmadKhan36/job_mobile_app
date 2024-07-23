@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:job_mobile_app/home_screen.dart';
 import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/custom_outline_button.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
@@ -27,7 +28,7 @@ class Page_Three extends StatelessWidget {
           ),
         ),
           Padding(
-            padding: const EdgeInsets.only(top: 550),
+            padding: const EdgeInsets.only(top: 610),
             child: Column(
               children: [
                 Center(
@@ -99,8 +100,13 @@ class Page_Three extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 10,),
-                ReusableText(text: 'Continue as a Guest',
-                fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap:(){
+                    Get.to(()=>Home_Screen());
+                  },
+                  child: ReusableText(text: 'Continue as a Guest',
+                  fontWeight: FontWeight.bold,
+                  ),
                 )
 
               ],

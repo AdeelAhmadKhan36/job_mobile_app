@@ -5,6 +5,7 @@ import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:job_mobile_app/controllers/login_provider.dart';
 import 'package:job_mobile_app/home_screen.dart';
@@ -17,6 +18,7 @@ import 'package:job_mobile_app/view/ui/Profile/admin_profile.dart';
 import 'package:job_mobile_app/view/ui/Profile/profile_details.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/admin_drawer.dart';
 import 'package:job_mobile_app/view/ui/auth/admin_signup.dart';
+import 'package:job_mobile_app/view/ui/auth/forgot_password.dart';
 import 'package:job_mobile_app/view/ui/auth/usersignup_screen.dart';
 import 'package:job_mobile_app/view/ui/drawer/animated_drawer.dart';
 import 'package:provider/provider.dart';
@@ -376,7 +378,17 @@ class _Login_ScreenState extends State<Login_Screen> {
                           },
                           controller: TextEditingController(text: selectedRole),
                         ),
-                        SizedBox(height: 80),
+                        Align(
+                          alignment: Alignment.bottomRight,
+
+                          child: TextButton(onPressed: (){
+                            Get.to(Forgot_PasswordScreen());
+
+                          }, child:Text("Forgot Password?")),
+                        ),
+
+
+                        SizedBox(height: 50),
                         RoundButton(
                           title: 'Login',
                           loading: loginNotifier.isLoading,
@@ -388,12 +400,13 @@ class _Login_ScreenState extends State<Login_Screen> {
                             }
                           },
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 120),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+
                           children: [
                             Text(
-                              "Don't have an account ",
+                              "Don't have an account?",
                               style: TextStyle(
                                   color: Colors.redAccent,
                                   decoration: TextDecoration.underline),

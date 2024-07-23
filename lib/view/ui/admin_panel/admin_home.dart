@@ -6,7 +6,6 @@ import 'package:job_mobile_app/resources/constants/app_colors.dart';
 import 'package:job_mobile_app/view/common/reuse_able_text.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/Job_Analytics.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/Posted_Jobs.dart';
-import 'package:job_mobile_app/view/ui/admin_panel/applications.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/post_job.dart';
 import 'package:job_mobile_app/view/ui/admin_panel/selectJobS_Screen.dart';
 

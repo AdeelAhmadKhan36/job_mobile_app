@@ -12,6 +12,7 @@ class Applicant_Profile extends StatefulWidget {
   final String jobId;
 
 
+
   const Applicant_Profile({Key? key, required this.applicantUid, required this.jobId,}) : super(key: key);
 
   @override
@@ -91,7 +92,7 @@ class _Applicant_ProfileState extends State<Applicant_Profile> {
               // Update the applicationStatus in Admins collection under the specific adminUID
               // FirebaseFirestore.instance
               //     .collection('Admins')
-              //     .doc(adminUID) // Replace with the actual adminUID
+              //     .doc(FirebaseAuth.instance.currentUser!.uid) // Replace with the actual adminUID
               //     .collection('my_jobs')
               //     .doc(jobId)
               //     .update({'applicationStatus': action})
