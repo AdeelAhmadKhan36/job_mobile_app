@@ -1,0 +1,65 @@
+name: "Build & Release"
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    name: Build & Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        run: |
+          git clone https://github.com/flutter/flutter.git
+          flutter/bin/flutter doctor
+
+      - name: Install dependencies
+        run: flutter/bin/flutter pub get
+
+      - name: Run tests
+        run: flutter/bin/flutter test
+
+      - name: Build APK
+        run: flutter/bin/flutter build apk --release --split-per-abi
+
+      - name: Build iOS (Optional)
+        run: |
+          flutter/bin/flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          mklink /J ../Runner.app
+          cd ..
+          powershell Compress-Archive -Path Payload -DestinationPath app.ipa
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/*.apk
+
+      - name: Upload iOS IPA
+        uses: actions/upload-artifact@v3
+        if: github.event_name == 'push'  # Only upload IPA for push events
+        with:
+          name: release-ipa
+          path: build/ios/iphoneos/app.ipa
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/flutter-apk/*.apk,build/ios/iphoneos/app.ipa"
+          tag: v1.0.${{ github.run_number }}
+          token: ${{ secrets.TOKEN}}
